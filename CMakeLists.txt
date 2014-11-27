@@ -6,4 +6,4 @@ set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -g")
 include_directories(./include)
 
 add_executable(out src/main.cpp 
-				   src/test_lib.cpp )
+		   src/test_lib.cpp )
