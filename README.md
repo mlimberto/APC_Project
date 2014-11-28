@@ -1,15 +1,6 @@
-APC
+ROADMAP 
 ===
 
-Test test test
+Definire una roadmap plausibile (cioè indicativamente darsi delle deadlines)
 
-MORE TEST 
-=== 
 
-Some other test 
-
-Cheers! 
-
-Ciao mi chiamo Lara
-
-Il Brando smadonna
