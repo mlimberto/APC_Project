@@ -1,6 +1,4 @@
 ROADMAP 
 ===
 
-Definire una roadmap plausibile (cioè indicativamente darsi delle deadlines)
-
-
+- *10/1/15* Finire la versione sequenziale
