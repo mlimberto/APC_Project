@@ -6,3 +6,4 @@ Domande
 * Operazioni più frequenti? Costo computazionale? 
 * A che livello posso usare librerie esterne? 
 * Come passare dal sequenziale al parallelo? Tendenzialmente credo che usando molte librerie esterne per passare al parallelo bisogna cambiare un sacco di codice. 
+* Qual'è l'utilità di definire dei tipi custom (ex. size_t ? ). Dobbiamo farlo? 
