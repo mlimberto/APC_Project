@@ -2,13 +2,10 @@
 #define LIB_BRANDO
 
 
+#include <iostream>
+
+void brando_function();
 
 
 
-
-
-
-
-
-
-#endif // LIB_BRANDO
+#endif // LIB_BRANDO_H
