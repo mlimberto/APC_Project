@@ -4,12 +4,30 @@
 //  Class for the projected gradient solver
 //  for the matrix U
 
+#ifndef PG_U_H
+#define PG_U_H
+
 #include <iostream>
 #include <armadillo>
 
+using namespace arma;
 
-#ifndef PG_U_H
-#define PG_U_H
+
+
+class PG_U {
+
+
+
+
+public :
+
+	PG_U(); // Constructor
+
+	void solve();
+
+
+};
+
 
 
 
