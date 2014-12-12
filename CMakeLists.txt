@@ -7,4 +7,8 @@ set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -g -larmadillo")
 
 include_directories(./include)
 
-add_executable(out src/main.cpp )
+add_executable(out src/pg_u.cpp 
+				   src/pg_h.cpp 
+				   src/amf.cpp
+				   src/main.cpp 
+				   )
