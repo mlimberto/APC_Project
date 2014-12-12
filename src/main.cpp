@@ -1,6 +1,9 @@
-#include <iostream> 
-#include <armadillo>
+//
+//  main.cpp
+//
 
+
+#include <iostream>
 
 
 ////////////////////////////////////////
