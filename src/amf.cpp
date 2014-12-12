@@ -2,14 +2,31 @@
 //  amf.cpp
 //  
 //
-//  Created by Matteo Limberto on 12/12/14.
 //
 //
 
 #include "amf.h"
 
+//////////////////////////
+////  CONSTRUCTORS  //////
+//////////////////////////
 
-AMF::AMF() // Constructor for AMF class
+// Most basic constructor
+AMF::AMF() :
+lambda_(0),n_max_iter_(100),toll_(0.001)
 {
     
 }
+
+
+
+//////////////////////////
+////  METHODS       //////
+//////////////////////////
+
+
+void AMF::solve() 
+{
+
+}
+
