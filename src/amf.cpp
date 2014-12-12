@@ -7,3 +7,9 @@
 //
 
 #include "amf.h"
+
+
+AMF::AMF() // Constructor for AMF class
+{
+    
+}
