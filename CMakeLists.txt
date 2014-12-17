@@ -1,9 +1,19 @@
 cmake_minimum_required(VERSION 2.8)
 
-project("Test_Project")
+project("APC_Project")
 
-set(CMAKE_CXX_COMPILER "g++")
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -g -larmadillo")
+set (APC_Project_VERSION_MAJOR 1)
+set (APC_Project_VERSION_MAJOR 0)
+
+IF (APPLE)
+	message("-- Setting configurations for Mac OS X")
+	set(CMAKE_CXX_COMPILER "clang++")
+	set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -g -larmadillo")
+ELSE()
+	message("-- Setting configurations for Linux machine")
+	set(CMAKE_CXX_COMPILER "g++")
+	set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -g -llapack -lblas -I ../APC_Build/armadillo-4.550.2/ ")
+ENDIF()
 
 include_directories(./include)
 
