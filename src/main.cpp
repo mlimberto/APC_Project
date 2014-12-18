@@ -17,7 +17,11 @@ int main(int argc,char** argv)
 
 	// Create instance for class AMF 
 
-	AMF solver; 
+	AMF solver;
+
+	solver.set_lambda(1.0); 
+
+	std::cout << solver.get_lambda() << std::endl;
 
 	return 0;
 }

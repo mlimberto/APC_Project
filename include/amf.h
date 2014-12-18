@@ -43,15 +43,32 @@ class AMF
         Mat<double> U_,U_old_,H_,H_old_ ; // Matrices U,H
 
 
+        void solve_one_iteration();
 
     
 public :
+
+    // CONSTRUCTORS
     
     AMF(); // Constructor
     
-    
-    
+    // SOLVING METHODS
+        
     void solve();
+
+    // SET METHODS
+
+    inline void set_lambda(const double &lambda) { lambda_ = lambda; }
+    inline void set_n_max_iter(const int n) { n_max_iter_ = n; }
+    inline void set_toll(const double &toll) { toll_ = toll; }
+    inline void set_n_latent_factors(const int r) { r_ = r; }
+
+    // GET METHODS
+
+    inline double get_lambda() { return lambda_; }
+    inline int get_n_max_iter() { return n_max_iter_; }
+    inline double get_toll() { return toll_; }
+    inline int get_n_latent_factors() { return r_; }
     
 };
 
