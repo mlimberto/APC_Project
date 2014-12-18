@@ -3,15 +3,16 @@
 //  
 //
 
-
 #ifndef ____amf__
 #define ____amf__
 
 #include <iostream>
 #include <armadillo>
 
+#include "my_utils.h"
 #include "pg_u.h" 
 #include "pg_h.h"
+#include "compute_v.h"
 
 using namespace arma;
 
@@ -30,6 +31,8 @@ class AMF
         double lambda_ ; // Over-fitting parameter
         int n_max_iter_ ; // maximum number of iterations
         double toll_ ; // Stop criterium 
+        int n_max_iter_gradient_ ; // Same as above for the projected gradient method
+        double toll_gradient_;
         int r_; // number of latent factors
         int n_; // users
         int m_; // items
@@ -42,6 +45,7 @@ class AMF
         SpMat<double> V_,V_old_ ; // Matrix V
         Mat<double> U_,U_old_,H_,H_old_ ; // Matrices U,H
 
+    // METHODS
 
         void solve_one_iteration();
 
@@ -50,7 +54,7 @@ public :
 
     // CONSTRUCTORS
     
-    AMF(); // Constructor
+    AMF();
     
     // SOLVING METHODS
         
@@ -62,14 +66,17 @@ public :
     inline void set_n_max_iter(const int n) { n_max_iter_ = n; }
     inline void set_toll(const double &toll) { toll_ = toll; }
     inline void set_n_latent_factors(const int r) { r_ = r; }
-
+    inline void set_n_max_iter_gradient(const int n) { n_max_iter_gradient_ = n; }
+    inline void set_toll_gradient(const double &toll) { toll_gradient_ = toll; }
+    
     // GET METHODS
 
     inline double get_lambda() { return lambda_; }
     inline int get_n_max_iter() { return n_max_iter_; }
     inline double get_toll() { return toll_; }
     inline int get_n_latent_factors() { return r_; }
-    
+    inline int get_n_max_iter_gradient() { return n_max_iter_gradient_; }
+    inline double get_toll_gradient() { return toll_gradient_; }
 };
 
 #endif /* defined(____amf__) */

@@ -10,6 +10,8 @@
 #include <iostream>
 #include <armadillo>
 
+#include "my_utils.h"
+
 using namespace arma;
 
 
