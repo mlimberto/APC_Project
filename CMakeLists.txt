@@ -12,10 +12,11 @@ IF (APPLE)
 ELSE()
 	message("-- Setting configurations for Linux machine")
 	set(CMAKE_CXX_COMPILER "g++")
-	set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -g -llapack -lblas -I ../APC_Build/armadillo-4.550.2/ ")
+	set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -g -llapack -lblas -Iarmadillo-4.550.3/include/ ")
 ENDIF()
 
 include_directories(./include)
+include_directories(../APC_Build/armadillo-4.550.3/include)
 
 add_executable(out src/my_utils.cpp 
 				   src/pg_u.cpp 
