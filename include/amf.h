@@ -46,6 +46,7 @@ class AMF
         Mat<double> U_,U_old_,H_,H_old_ ; // Matrices U,H
 
     // METHODS
+        void initialize_matrices();
 
         void solve_one_iteration();
 
@@ -63,10 +64,10 @@ public :
     // SET METHODS
 
     inline void set_lambda(const double &lambda) { lambda_ = lambda; }
-    inline void set_n_max_iter(const int n) { n_max_iter_ = n; }
+    inline void set_n_max_iter(int n) { n_max_iter_ = n; }
     inline void set_toll(const double &toll) { toll_ = toll; }
-    inline void set_n_latent_factors(const int r) { r_ = r; }
-    inline void set_n_max_iter_gradient(const int n) { n_max_iter_gradient_ = n; }
+    inline void set_n_latent_factors(int r) { r_ = r; }
+    inline void set_n_max_iter_gradient(int n) { n_max_iter_gradient_ = n; }
     inline void set_toll_gradient(const double &toll) { toll_gradient_ = toll; }
     
     // GET METHODS
