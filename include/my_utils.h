@@ -8,12 +8,26 @@
 #define UTILS_H
 
 #include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
 #include <armadillo> 
 
 using namespace arma;
 
+// INPUT-OUTPUT FUNCTIONS
 
-// Utility functions
+bool read_URM_From_File(std::vector<unsigned int> &rows , 
+						std::vector<unsigned int> &cols , 
+						std::vector<double> &values , 
+						std::string matrix_filename ) ;
+
+bool read_ICM_From_File(std::vector<unsigned int> &rows , 
+						std::vector<unsigned int> &cols , 
+						std::vector<unsigned int> &values,
+						std::string matrix_filename ) ;
+
+// UTILITY FUNCTIONS
 
 // This function computes S(i,j) from URM,U,H,V using
 // S(i,j) = URM(i,j) if URM(i,j) != 0 
@@ -22,7 +36,7 @@ using namespace arma;
 double build_S(int i, int j, SpMat<double> URM, Mat<double> U, Mat<double> H, SpMat<double> V ) ; 
 
 
-// Debugging functions
+// DEBUGGING FUNCTIONS
 
 bool check_V_Constraint(SpMat<double> V) ; // Verify that constraints on V are satisfied
 
