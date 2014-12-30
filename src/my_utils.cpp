@@ -138,3 +138,22 @@ bool check_V_Constraint(const SpMat<double>& V,const SpMat<int>& X)
 }
 
 
+bool check_Positive_Matrix(const Mat<double> &U)
+{
+	// Loop on the elements of the matrix to check positivity 
+
+	for (Mat<double>::const_iterator i = U.begin() ; i != U.end() ; ++i )
+	{
+		if ( (*i)<0 )
+		{
+			#ifndef NDEBUG
+			std::cerr << "Found negative element!" << std::endl;
+			#endif
+			return false;
+		}
+	}
+
+	return true;
+}
+
+

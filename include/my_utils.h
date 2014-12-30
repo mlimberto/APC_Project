@@ -52,6 +52,8 @@ double build_S(int i, int j, SpMat<double> URM, Mat<double> U,
 // X is the ICM matrix
 bool check_V_Constraint(const SpMat<double> &V,const SpMat<int>& X) ; 
 
+bool check_Positive_Matrix(const Mat<double> &U) ;
+
 
 
 #endif /* defined(UTILS_H) */
