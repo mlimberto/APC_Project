@@ -15,7 +15,10 @@
 
 using namespace arma;
 
-// INPUT-OUTPUT FUNCTIONS
+
+///////////////////////////////////
+////// INPUT-OUTPUT FUNCTIONS /////
+///////////////////////////////////
 
 bool read_URM_From_File(std::vector<unsigned int> &rows , 
 						std::vector<unsigned int> &cols , 
@@ -27,18 +30,27 @@ bool read_ICM_From_File(std::vector<unsigned int> &rows ,
 						std::vector<unsigned int> &values,
 						std::string matrix_filename ) ;
 
-// UTILITY FUNCTIONS
+
+///////////////////////////////////
+//////// UTILITY FUNCTIONS ////////
+///////////////////////////////////
 
 // This function computes S(i,j) from URM,U,H,V using
 // S(i,j) = URM(i,j) if URM(i,j) != 0 
 // or 
 // S(i,j) = (U*H*V)(i,j) if URM(i,j) == 0
-double build_S(int i, int j, SpMat<double> URM, Mat<double> U, Mat<double> H, SpMat<double> V ) ; 
+double build_S(int i, int j, SpMat<double> URM, Mat<double> U, 
+				Mat<double> H, SpMat<double> V ) ; 
 
 
-// DEBUGGING FUNCTIONS
+///////////////////////////////////
+////// DEBUGGING FUNCTIONS ////////
+///////////////////////////////////
 
-bool check_V_Constraint(SpMat<double> V) ; // Verify that constraints on V are satisfied
+
+// Returns true if constraints on V are satisfied
+// X is the ICM matrix
+bool check_V_Constraint(const SpMat<double> &V,const SpMat<int>& X) ; 
 
 
 

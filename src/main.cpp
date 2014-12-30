@@ -23,5 +23,7 @@ int main(int argc,char** argv)
 
 	std::cout << solver.get_lambda() << std::endl;
 
+	Mat<double> U(5,5);
+
 	return 0;
 }
