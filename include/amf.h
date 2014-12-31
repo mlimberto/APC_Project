@@ -7,6 +7,10 @@
 #define ____amf__
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <map>
 #include <armadillo>
 
 #include "my_utils.h"
@@ -53,9 +57,11 @@ class AMF
     
 public :
 
-    // CONSTRUCTORS
+    // CONSTRUCTORS and INITIALIZERS
     
     AMF();
+
+    bool initialize_Parameters(std::string filename);
     
     // SOLVING METHODS
         
@@ -63,12 +69,12 @@ public :
 
     // SET METHODS
 
-    inline void set_lambda(const double &lambda) { lambda_ = lambda; }
+    inline void set_lambda(double lambda) { lambda_ = lambda; }
     inline void set_n_max_iter(int n) { n_max_iter_ = n; }
-    inline void set_toll(const double &toll) { toll_ = toll; }
+    inline void set_toll(double toll) { toll_ = toll; }
     inline void set_n_latent_factors(int r) { r_ = r; }
     inline void set_n_max_iter_gradient(int n) { n_max_iter_gradient_ = n; }
-    inline void set_toll_gradient(const double &toll) { toll_gradient_ = toll; }
+    inline void set_toll_gradient(double toll) { toll_gradient_ = toll; }
     
     // GET METHODS
 
