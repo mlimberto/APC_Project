@@ -123,6 +123,7 @@ bool AMF::inizialize_ICM_Locations(std::string matrix_filename){
         Values(i)=val;
         i++;
     }
+
     arma::sp_umat icm(Location_Matrix,Values);
     ICM_=icm;
     return true;
@@ -147,8 +148,11 @@ bool AMF::inizialize_URM_Locations(std::string matrix_filename){
         i++;
     }
 
+    #ifndef NDEBUG
     Location_Matrix.print("Location Matrix : ");
     Values.print("Values Vector: ");
+    #endif
+    
     arma::sp_mat urm(Location_Matrix,Values);
     URM_=urm;
     return true;

@@ -20,15 +20,7 @@ using namespace arma;
 ////// INPUT-OUTPUT FUNCTIONS /////
 ///////////////////////////////////
 
-bool read_URM_From_File(std::vector<unsigned int> &rows , 
-						std::vector<unsigned int> &cols , 
-						std::vector<double> &values , 
-						std::string matrix_filename ) ;
 
-bool read_ICM_From_File(std::vector<unsigned int> &rows , 
-						std::vector<unsigned int> &cols , 
-						std::vector<unsigned int> &values,
-						std::string matrix_filename ) ;
 
 
 ///////////////////////////////////
