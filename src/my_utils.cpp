@@ -20,6 +20,16 @@ double build_S(int i, int j, SpMat<double> URM, Mat<double> U, Mat<double> H, Sp
 	return 0;
 }
 
+
+void get_Positive_Matrix(Mat<double> &U)
+{
+	for (auto i = U.begin() ; i != U.end() ; ++i)
+	{
+		if (*i < 0)
+			*i = 0;
+	}
+}
+
 ///////////////////////////////////
 ////// DEBUGGING FUNCTIONS ////////
 ///////////////////////////////////

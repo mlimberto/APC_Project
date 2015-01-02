@@ -15,6 +15,7 @@
 AMF::AMF() :
 lambda_(0),n_max_iter_(100),toll_(0.001)
 {
+	std::cout << "WARNING : The default constructor has been called, so your instance is still basically empty." << std::endl;
     
 }
 

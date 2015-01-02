@@ -35,6 +35,9 @@ double build_S(int i, int j, SpMat<double> URM, Mat<double> U,
 				Mat<double> H, SpMat<double> V ) ; 
 
 
+void get_Positive_Matrix(Mat<double> &U) ;
+
+
 ///////////////////////////////////
 ////// DEBUGGING FUNCTIONS ////////
 ///////////////////////////////////
