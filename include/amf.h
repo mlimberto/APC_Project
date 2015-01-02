@@ -43,8 +43,8 @@ class AMF
         int k_; // labels
     
         // Matrices
-        SpMat<double> URM_;  // user-rating matrix, given in the dataset
-        SpMat<int> ICM_; // item-content matrix, given in the dataset
+        sp_mat URM_;  // user-rating matrix, given in the dataset
+        sp_umat ICM_; // item-content matrix, given in the dataset
 
         SpMat<double> V_,V_old_ ; // Matrix V
         Mat<double> U_,U_old_,H_,H_old_ ; // Matrices U,H
@@ -62,6 +62,8 @@ public :
     AMF();
 
     bool initialize_Parameters(std::string filename);
+    bool inizialize_ICM_Locations(std::string matrix_filename);
+    bool inizialize_URM_Locations(std::string matrix_filename);
     
     // SOLVING METHODS
         
@@ -84,6 +86,11 @@ public :
     inline int get_n_latent_factors() { return r_; }
     inline int get_n_max_iter_gradient() { return n_max_iter_gradient_; }
     inline double get_toll_gradient() { return toll_gradient_; }
+
+
+    inline void print_ICM(){ICM_.print("ICM =");}
+    inline void print_URM(){URM_.print("URM =");}
+
 };
 
 #endif /* defined(____amf__) */

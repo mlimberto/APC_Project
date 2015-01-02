@@ -1,7 +1,7 @@
 %% Matlab script to convert a Sparse Matrix from the .mat format into txt.
 % 
 %%
-function SpMat_Convert
+function SpMat_ConvertWithLocations
 
 % INPUT
 [FileName,PathName] = uigetfile('*.mat','Select the MAT-file where the matrices urm and icm are stored'); 
@@ -16,12 +16,12 @@ else
     % WRITE THE .txt
     [i_urm,j_urm,values_urm] = find(urm);
     fileID_urm=fopen('urm_converted.txt','wt');
-    fprintf(fileID_urm,'%d %d %f\n',[i_urm,j_urm,values_urm]');
+    fprintf(fileID_urm,'%d %d %f\n',[i_urm-1,j_urm-1,values_urm]');
     fclose(fileID_urm);
 
     [i_icm,j_icm,values_icm] = find(icm);
     fileID_icm=fopen('icm_converted.txt','wt');
-    fprintf(fileID_icm,'%d %d %d\n',[i_icm,j_icm,values_icm]');
+    fprintf(fileID_icm,'%d %d %d\n',[i_icm-1,j_icm-1,values_icm]');
     fclose(fileID_icm);
 end
 

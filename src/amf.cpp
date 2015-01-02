@@ -104,6 +104,56 @@ bool AMF::initialize_Parameters(std::string filename)
 	return true;
 }
 
+bool AMF::inizialize_ICM_Locations(std::string matrix_filename){
+    #ifndef NDEBUG
+    std::cout << "Importing ICM from file " << matrix_filename << std::endl;
+    #endif
+
+    arma::umat Location_Matrix;
+    arma::uvec Values;
+    arma::umat RCi(2,1);
+    unsigned int val;
+    std::ifstream matrix_file(matrix_filename);
+
+    // Read the file and build the Location Matrix and the Values vector
+    unsigned int i=0;
+    while (matrix_file >> RCi(0,0) >> RCi(1,0) >> val){
+        Location_Matrix.insert_cols(i,RCi);
+        Values.resize(i+1);
+        Values(i)=val;
+        i++;
+    }
+    arma::sp_umat icm(Location_Matrix,Values);
+    ICM_=icm;
+    return true;
+}
+bool AMF::inizialize_URM_Locations(std::string matrix_filename){
+    #ifndef NDEBUG
+    std::cout << "Importing URM from file " << matrix_filename << std::endl;
+    #endif
+
+    arma::umat Location_Matrix;
+    arma::vec Values;
+    arma::umat RCi(2,1);
+    double val;
+    std::ifstream matrix_file(matrix_filename);
+
+    // Read the file and build the Location Matrix and the Values vector
+    unsigned int i=0;
+    while (matrix_file >> RCi(0,0) >> RCi(1,0) >> val){
+        Location_Matrix.insert_cols(i,RCi);
+        Values.resize(i+1);
+        Values(i)=val;
+        i++;
+    }
+
+    Location_Matrix.print("Location Matrix : ");
+    Values.print("Values Vector: ");
+    arma::sp_mat urm(Location_Matrix,Values);
+    URM_=urm;
+    return true;
+}
+
 void AMF::initialize_matrices()
 {
 

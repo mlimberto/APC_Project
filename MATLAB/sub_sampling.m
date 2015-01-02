@@ -34,5 +34,5 @@ icm_sampling(indexes,:)=[];
 
 [row_icm_sampling,column_icm_sampling,values_icm_sampling] = find(icm_sampling);
 fileID_icm_sampling=fopen('icm_sampling.txt','wt');
-fprintf(fileID_icm_sampling,'%d %d %f\n',[row_icm_sampling,column_icm_sampling,values_icm_sampling]');
+fprintf(fileID_icm_sampling,'%d %d %d\n',[row_icm_sampling-1,column_icm_sampling-1,values_icm_sampling]');
 fclose(fileID_icm_sampling);
