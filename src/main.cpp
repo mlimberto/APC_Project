@@ -13,17 +13,25 @@
 
 int main(int argc,char** argv)
 {
-	std:: cout << "Hello world" << std::endl ;
+	if (argc < 3)
+	{
+		std::cout << std::endl << "How to execute this program : \n" << std::endl
+		<< "./name_executable <path_to_URM> <path_to_ICM> <path_to_param_file>"
+		<< "\n\n\n" ;
+		return 0;
+	}
 
-	// Create instance for class AMF 
+	// Create an instance of the AMF solver 
 
-	AMF solver;
+	std::cout << "Creating instance of AMF ... " ;
 
-	solver.set_lambda(1.0); 
+	AMF amf(argv[1],argv[2],argv[3]) ;
 
-	std::cout << solver.get_lambda() << std::endl;
+	std::cout << "Done!" << std::endl;
 
-	Mat<double> U(5,5);
+
+
+
 
 	return 0;
 }

@@ -18,6 +18,27 @@ lambda_(0),n_max_iter_(100),toll_(0.001)
     
 }
 
+AMF::AMF(std::string URM_filename, std::string ICM_filename, std::string param_filename)
+{
+	std::cout << "Creating instance of AMF" << std::endl;
+
+	if (!initialize_Parameters(param_filename))
+	{
+		std::cout << "WARNING : Initialization of parameters from file didn't work properly" << std::endl;
+	}
+
+	if (!initialize_URM_Locations(URM_filename))
+	{
+		std::cout << "WARNING : Initialization of URM matrix from file didn't work properly" << std::endl;
+	}
+
+	if (!initialize_ICM_Locations(ICM_filename))
+	{
+		std::cout << "WARNING : Initialization of ICM matrix from file didn't work properly" << std::endl;
+	}
+
+}
+
 
 
 //////////////////////////
@@ -104,7 +125,7 @@ bool AMF::initialize_Parameters(std::string filename)
 	return true;
 }
 
-bool AMF::inizialize_ICM_Locations(std::string matrix_filename){
+bool AMF::initialize_ICM_Locations(std::string matrix_filename){
     #ifndef NDEBUG
     std::cout << "Importing ICM from file " << matrix_filename << std::endl;
     #endif
@@ -134,7 +155,7 @@ bool AMF::inizialize_ICM_Locations(std::string matrix_filename){
     return true;
 }
 
-bool AMF::inizialize_URM_Locations(std::string matrix_filename){
+bool AMF::initialize_URM_Locations(std::string matrix_filename){
     #ifndef NDEBUG
     std::cout << "Importing URM from file " << matrix_filename << std::endl;
     #endif
