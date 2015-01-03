@@ -14,7 +14,6 @@
 #include <armadillo>
 
 #include "my_utils.h"
-#include "compute_v.h"
 
 using namespace arma;
 
@@ -69,6 +68,12 @@ class AMF
         void solve_pg_H_With_Log();
 
         void solve_pg_H_One_Iteration(mat &G, mat &A);
+
+
+        void solve_V();
+
+        void solve_V_One_Step_Gradient();
+
 
     
 public :
