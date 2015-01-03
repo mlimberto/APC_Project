@@ -9,12 +9,10 @@
 
 using std::string;
 using std::vector;
-using std::ifstream;
 
 
 
-
-double build_S(int i, int j, SpMat<double> URM, Mat<double> U, Mat<double> H, SpMat<double> V )
+double build_S(int i, int j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V )
 {
 
 	return 0;
