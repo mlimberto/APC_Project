@@ -14,8 +14,6 @@
 #include <armadillo>
 
 #include "my_utils.h"
-#include "pg_u.h" 
-#include "pg_h.h"
 #include "compute_v.h"
 
 using namespace arma;
@@ -33,10 +31,14 @@ class AMF
     
         // Parameters
         double lambda_ ; // Over-fitting parameter
+
         int n_max_iter_ ; // maximum number of iterations
         double toll_ ; // Stop criterium 
+
         int n_max_iter_gradient_ ; // Same as above for the projected gradient method
         double toll_gradient_;
+        double gradient_step_; // Length of the gradient step
+
         int r_; // number of latent factors
         int n_; // users
         int m_; // items
@@ -53,6 +55,20 @@ class AMF
         void initialize_matrices();
 
         void solve_one_iteration();
+
+
+        void solve_pg_U();
+
+        void solve_pg_U_With_Log();
+
+        void solve_pg_U_One_Iteration(mat &G,mat &A);
+
+
+        void solve_pg_H();
+
+        void solve_pg_H_With_Log();
+
+        void solve_pg_H_One_Iteration(mat &G, mat &A);
 
     
 public :
@@ -79,6 +95,7 @@ public :
     inline void set_n_latent_factors(int r) { r_ = r; }
     inline void set_n_max_iter_gradient(int n) { n_max_iter_gradient_ = n; }
     inline void set_toll_gradient(double toll) { toll_gradient_ = toll; }
+    inline void set_gradient_step(double g_step) { gradient_step_ = g_step; }
     
     // GET METHODS
 
@@ -88,6 +105,7 @@ public :
     inline int get_n_latent_factors() { return r_; }
     inline int get_n_max_iter_gradient() { return n_max_iter_gradient_; }
     inline double get_toll_gradient() { return toll_gradient_; }
+    inline double get_gradient_step() { return gradient_step_; }
 
 
     inline void print_ICM(){ICM_.print("ICM =");}

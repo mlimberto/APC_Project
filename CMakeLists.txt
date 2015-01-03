@@ -18,9 +18,8 @@ ENDIF()
 
 include_directories(./include)
 
-add_executable(out src/my_utils.cpp 
-				   src/pg_u.cpp 
-				   src/pg_h.cpp 
+add_executable(out src/my_utils.cpp
+				   src/proj_gradient.cpp 
 				   src/amf.cpp
 				   src/main.cpp 
 				   )

@@ -24,6 +24,7 @@ int main(int argc,char** argv)
 
 	cout << "toll_gradient has been set to " << amf.get_toll_gradient() << endl;
 
+	cout << "gradient_step has been set to " << amf.get_gradient_step() << endl;
 
 	cout << ( (amf.get_lambda()==1.5) ? "Succeed" : "Failed") << endl;
 	

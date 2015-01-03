@@ -29,6 +29,8 @@ int main(int argc,char** argv)
 
 	std::cout << "Done!" << std::endl;
 
+	amf.solve();
+
 
 
 

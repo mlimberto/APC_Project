@@ -63,6 +63,8 @@ bool AMF::initialize_Parameters(std::string filename)
 	options_map["N_LATENT_FACTORS"] = 3;
 	options_map["N_MAX_ITER_GRADIENT"] = 4;
 	options_map["TOLL_GRADIENT"] = 5;
+	options_map["GRADIENT_STEP"] = 6;
+
 
 
 	// Open and read the parameters file 
@@ -114,6 +116,10 @@ bool AMF::initialize_Parameters(std::string filename)
 
 			case 5: 
 			double toll_g ; param_file >> toll_g ; set_toll_gradient(toll_g);
+			break;
+
+			case 6: 
+			double g_step ; param_file >> g_step ; set_gradient_step(g_step);
 			break;
 
 			default : 
@@ -196,6 +202,7 @@ void AMF::initialize_matrices()
 
 void AMF::solve() 
 {
+	solve_pg_U();
 
 	// Remember to swap the variables
 
