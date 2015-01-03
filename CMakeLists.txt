@@ -19,6 +19,7 @@ ENDIF()
 include_directories(./include)
 
 add_executable(out src/my_utils.cpp
+				   src/compute_v.cpp
 				   src/proj_gradient.cpp 
 				   src/amf.cpp
 				   src/main.cpp 
