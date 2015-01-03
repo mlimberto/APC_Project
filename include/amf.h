@@ -74,12 +74,9 @@ class AMF
 
         void solve_V_One_Step_Gradient();
 
-
+        sp_mat project_ICM(const mat &B);
     
 public :
-
-    // FRIENDS (for testing purposes)
-    friend bool test_PG_U(AMF &amf);
 
     // CONSTRUCTORS and INITIALIZERS
     
