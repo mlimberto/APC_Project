@@ -61,7 +61,7 @@ class AMF
 
         void solve_pg_U_With_Log();
 
-        void solve_pg_U_One_Iteration(mat &G,mat &A);
+        void solve_pg_U_One_Iteration(mat &G,const mat &A);
 
 
         void solve_pg_H();
@@ -72,6 +72,9 @@ class AMF
 
     
 public :
+
+    // FRIENDS (for testing purposes)
+    friend bool test_PG_U(AMF &amf);
 
     // CONSTRUCTORS and INITIALIZERS
     
