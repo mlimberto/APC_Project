@@ -14,7 +14,6 @@
 #include <armadillo>
 
 #include "my_utils.h"
-#include "compute_v.h"
 
 using namespace arma;
 
