@@ -33,6 +33,13 @@ using namespace arma;
 // S(i,j) = (U*H*V)(i,j) if URM(i,j) == 0
 double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V ) ;
 
+// This function evaluates ||S - UHV ||^2 where 
+// ||*|| refers to the Frobenius norm 
+double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
+							 const Mat<double>& H,const SpMat<double>& V,
+							 const Mat<double>& U_old,const Mat<double>& H_old,
+							 const SpMat<double> V_old);
+
 void get_Positive_Matrix(Mat<double> &U) ;
 
 
