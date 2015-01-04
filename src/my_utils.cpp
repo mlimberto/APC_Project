@@ -13,16 +13,16 @@ using std::vector;
 
 // ricordarsi che gli indici di riga e colonna in c++ partono da 0 !!
 
-mat build_S(int i, int j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V )
+double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V )
 {
-	mat temp = mat();
 	if (URM(i,j) != 0){
-		temp = URM(i,j);
+		return URM(i,j);
 	}
-	if (URM(i,j) == 0){
-			temp = U.row(i)*H*V.col(j);
-		}
-	return temp;
+	else
+	{
+		return as_scalar(U.row(i)*H*V.col(j));
+	}
+}
 }
 
 
