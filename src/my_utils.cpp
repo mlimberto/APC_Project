@@ -11,11 +11,18 @@ using std::string;
 using std::vector;
 
 
+// ricordarsi che gli indici di riga e colonna in c++ partono da 0 !!
 
-double build_S(int i, int j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V )
+mat build_S(int i, int j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V )
 {
-
-	return 0;
+	mat temp = mat();
+	if (URM(i,j) != 0){
+		temp = URM(i,j);
+	}
+	if (URM(i,j) == 0){
+			temp = U.row(i)*H*V.col(j);
+		}
+	return temp;
 }
 
 
