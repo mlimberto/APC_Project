@@ -27,11 +27,21 @@ double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,co
 double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
 							 const Mat<double>& H,const SpMat<double>& V,
 							 const Mat<double>& U_old,const Mat<double>& H_old,
-							 const SpMat<double> V_old)
+							 const SpMat<double> V_old, const double lambda)
 {
 
-	return 0;
+	double obj(0);
+
+	for ( size_t i(0), i < URM.n_rows , i++){
+		for ( size_t j(0), j < URM.n_cols, j++){
+			obj += pow( build_S( i, j, URM, U_old, H_old, V_old) - U.row(i)*H*V.col(j) , 2 );
+		}
+	}
+
+	return as_scalar( obj + lambda * ( pow( norm (U,"fro"), 2) + pow( norm (H,"fro"), 2) ) );
 }
+
+
 
 
 void get_Positive_Matrix(Mat<double> &U)
