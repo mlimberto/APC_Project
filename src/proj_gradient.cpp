@@ -25,15 +25,21 @@ void AMF::solve_pg_U()
 	mat G(U_.n_rows,U_.n_cols,fill::zeros);
 
 	mat A = H_old_*V_old_; // This matrix shall be computed only once and stored
+	// POTREBBE ESSERE INTERESSANTE AGGIUNGERE LA MATRICE A*tA
+
+	// BISOGNA INIZIALIZZARE U. MAGARI A U_OLD !!!
+
 
 	// Run the loop
 
 	bool stop_criterion = false;
 
+	double prec_obj(0) , curr_obj(0);
+
 	for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n ) 
 	{
 		// #ifndef NDEBUG
-		// std::cout <<"Iteration " << n << std::endl;
+		// std::cout <<"Gradient method for U, iteration " << n << std::endl;
 		// #endif
 
 
@@ -41,7 +47,11 @@ void AMF::solve_pg_U()
 		solve_pg_U_One_Iteration(G,A);
 
 		// Evaluate stop criterion
+		prec_obj = curr_obj;
+		curr_obj = evaluate_Obj_Function(URM_,U_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_);
 
+		if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
+			stop_criterion = true;
 
 	}
 
@@ -50,7 +60,28 @@ void AMF::solve_pg_U()
 
 void AMF::solve_pg_U_With_Log()
 {
+	std::ofstream logfile;
+	logfile.open("log_pg_u.txt");
 
+
+	mat G(U_.n_rows,U_.n_cols,fill::zeros);
+	mat A = H_old_*V_old_;
+
+	bool stop_criterion = false;
+
+	for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n ) 
+	{
+		solve_pg_U_One_Iteration(G,A);
+
+		// Evaluate stop criterion
+		double obj = 0.0;
+
+		// Save information on logfile
+		logfile << std::scientific << obj << "\n";
+
+	}
+
+	logfile.close();
 }
 
 void AMF::solve_pg_U_One_Iteration(mat &G,const mat &A)
