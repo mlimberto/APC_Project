@@ -32,8 +32,8 @@ double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
 
 	mat obj = mat("0");
 
-	for ( size_t i(0); i < URM.n_rows ; i++){
-		for ( size_t j(0); j < URM.n_cols; j++){
+	for ( std::size_t i(0); i < URM.n_rows ; i++){
+		for ( std::size_t j(0); j < URM.n_cols; j++){
 			obj = obj +  pow( build_S( i, j, URM, U_old, H_old, V_old) - U.row(i)*H*V.col(j) , 2 );
 		}
 	}
@@ -73,9 +73,9 @@ bool check_V_Constraint(const SpMat<double>& V,const SpMat<int>& X)
 	// TODO This loop is inefficient, we could use the CSC format to perform
 	// this check, not very important though
 
-	for (auto i = 0 ; i<X.n_cols ; ++i)
+	for (std::size_t i = 0 ; i<X.n_cols ; ++i)
 	{
-		for (auto j = 0 ; j < X.n_rows ; ++j) 
+		for (std::size_t j = 0 ; j < X.n_rows ; ++j)
 		{	
 			if (X(i,j)==0 && V(i,j)!=0)
 			{
