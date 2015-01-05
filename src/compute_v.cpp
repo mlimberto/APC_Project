@@ -22,12 +22,13 @@ void AMF::solve_V(){
 
 }
 
-void solve_V_One_Step_Gradient(){
+void AMF::solve_V_One_Step_Gradient(){
 
     // Computation of the gradient of f=||S-UHV||^2
 
     mat UH = U_*H_;
-    sp_mat grad(V_old_.n_rows,V_old_.n_cols,fill::zeros);
+
+    sp_mat grad(V_old_.n_rows,V_old_.n_cols); // Abbiamo automaticamente l'inizializzazione a zero
 
 
     // Projection of the gradient on C
@@ -39,7 +40,7 @@ void solve_V_One_Step_Gradient(){
     // Computation of V^
 }
 
-sp_mat project_ICM(const mat &B){
+sp_mat AMF::project_ICM(const mat &B){
 
     if (B.n_cols != ICM_.n_cols || B.n_rows != ICM_.n_rows)
     {
