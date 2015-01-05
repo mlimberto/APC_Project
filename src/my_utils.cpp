@@ -30,11 +30,11 @@ double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
 							 const SpMat<double> V_old, const double lambda)
 {
 
-	double obj(0);
+	mat obj = mat("0");
 
 	for ( size_t i(0); i < URM.n_rows ; i++){
 		for ( size_t j(0); j < URM.n_cols; j++){
-			obj += pow( build_S( i, j, URM, U_old, H_old, V_old) - U.row(i)*H*V.col(j) , 2 );
+			obj = obj +  pow( build_S( i, j, URM, U_old, H_old, V_old) - U.row(i)*H*V.col(j) , 2 );
 		}
 	}
 
