@@ -24,6 +24,7 @@ double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,co
 	}
 }
 
+
 double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
 							 const Mat<double>& H,const SpMat<double>& V,
 							 const Mat<double>& U_old,const Mat<double>& H_old,
