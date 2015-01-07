@@ -52,7 +52,7 @@ bool test_PG_U(AMF & amf )
 
 	// Run the test
 
-	amf.solve_pg_U();
+	amf.solve_pg_U_With_Log();
 
 	amf.U_.print("U matrix");
 
