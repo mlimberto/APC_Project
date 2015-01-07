@@ -18,13 +18,14 @@ void AMF::solve_pg_U()
 	#ifndef NDEBUG
 	std::cout << "Solving projected gradient for U " << std::endl;
 	#endif
+	
+	// Initialize U (check what is best)
+	U_ = U_old_;
 
 	// Allocate and compute the temporary matrix A := H*V
 	// and the gradient matrix G
 	mat G(U_.n_rows,U_.n_cols,fill::zeros);
 	mat A = H_old_*V_old_; // This matrix shall be computed only once and stored
-
-	// BISOGNA INIZIALIZZARE U. MAGARI A U_OLD !!!
 
 	// Run the loop
 
@@ -58,6 +59,9 @@ void AMF::solve_pg_U_With_Log()
 {
 	std::ofstream logfile;
 	logfile.open("log_pg_u.txt");
+
+	// Initialize U (check what is best)
+	U_ = U_old_;
 
 	mat G(U_.n_rows,U_.n_cols,fill::zeros);
 	mat A = H_old_*V_old_;

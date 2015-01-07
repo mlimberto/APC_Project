@@ -34,18 +34,14 @@ bool test_PG_U(AMF & amf )
 
 	URM.print("URM Matrix");
 
-	swap(amf.URM_,URM);
-
-	// Initialize U
-
-	amf.U_.randu(5,3);
-	amf.U_ = amf.U_*10.0;
-
-	amf.U_.print("U matrix");
+	amf.URM_ = URM;
 
 	// Initialize U_old
 
-	amf.U_old_ = amf.U_;
+	amf.U_old_.randu(5,3);
+	amf.U_old_ = amf.U_old_*10.0;
+
+	amf.U_old_.print("U_old matrix");
 
 	// Set toll gradient
 	amf.toll_gradient_ = 1e-5;
@@ -57,8 +53,6 @@ bool test_PG_U(AMF & amf )
 	amf.U_.print("U matrix");
 
 	cout << "End of the test function" << endl;
-
-	swap(URM,amf.URM_); // Swap back to avoid memory ownership issues
 
 	return true;
 }
