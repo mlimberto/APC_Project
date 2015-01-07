@@ -116,22 +116,10 @@ void AMF::solve_pg_U_One_Iteration(mat &G,const mat &A)
 	// Update U_ 
 	U_ = U_ - gradient_step_*G -2*gradient_step_*lambda_*U_ ;
 
-	// #ifndef NDEBUG
-	// std::cout << std::scientific << norm(U_,"fro")  << std::endl;
-	// #endif
 
 	// Projection step
+
 	get_Positive_Matrix(U_);
-
-	// #ifndef NDEBUG
-	// std::cout << std::scientific << norm(U_,"fro") << std::endl;
-	// #endif
-
-	// #ifndef NDEBUG
-	// U_.print("U matrix");
-	// G.print("G matrix");
-	// #endif	
-
 
 }
 

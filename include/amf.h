@@ -78,6 +78,8 @@ class AMF
     
 public :
 
+    friend bool test_PG_U(AMF & amf); // For testing purposes
+
     // CONSTRUCTORS and INITIALIZERS
     
     AMF();
