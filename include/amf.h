@@ -75,11 +75,12 @@ class AMF
         sp_mat solve_V_One_Step_Gradient(const sp_mat &V_0);
         sp_mat project_ICM(const mat &G);
 
-        void orthogonal_projection(sp_mat &v);
+        void orthogonal_projection(sp_mat &G);
     
 public :
 
     friend bool test_PG_U(AMF & amf); // For testing purposes
+    friend bool test_orthogonal_projection();
 
     // CONSTRUCTORS and INITIALIZERS
     
@@ -115,9 +116,9 @@ public :
     inline double get_toll_gradient() { return toll_gradient_; }
     inline double get_gradient_step() { return gradient_step_; }
 
-    inline mat& get_U() {return U_old_}; // Sarebbe meglio aggiungere delle const da qualche parte per essere sicuri che U,V,H non vengano toccate
-    inline mat& get_H() {return H_old_};
-    inline sp_mat& get_V() {return V_old_};
+    inline mat& get_U() {return U_old_;} // Sarebbe meglio aggiungere delle const da qualche parte per essere sicuri che U,V,H non vengano toccate
+    inline mat& get_H() {return H_old_;}
+    inline sp_mat& get_V() {return V_old_;}
 
 
     inline void print_ICM(){ICM_.print("ICM =");}

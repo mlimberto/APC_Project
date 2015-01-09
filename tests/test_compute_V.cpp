@@ -1,9 +1,28 @@
 #include <iostream>
+#include "amf.h"
 
 #include <armadillo>
 
 using namespace std;
 using namespace arma;
+
+bool test_orthogonal_projection()
+{
+    sp_mat A(4,4);
+    A(0,0) = -2;
+    A(1,0) = 1;
+
+
+    AMF amf;
+    
+    amf.orthogonal_projection(A);
+
+    A.print("Resulting matrix");
+
+
+
+    return true;
+}
 
 int main(int argc,char **argv)
 {
@@ -27,5 +46,10 @@ int main(int argc,char **argv)
     //A2.print("A2 (projection of B on ICM_example) : ");
     sp_mat v=A.col(0);
     v.print("v : ");
+
+    // Test per la proiezione ortogonale
+    test_orthogonal_projection();
+
+
     return 0;
 }
