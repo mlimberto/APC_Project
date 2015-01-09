@@ -75,7 +75,7 @@ class AMF
         sp_mat solve_V_One_Step_Gradient(const sp_mat &V_0);
         sp_mat project_ICM(const mat &G);
 
-        void othogonal_projection(sp_mat &v);
+        void orthogonal_projection(sp_mat &v);
     
 public :
 

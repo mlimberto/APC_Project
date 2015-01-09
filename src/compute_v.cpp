@@ -34,7 +34,7 @@ sp_mat AMF::solve_V_One_Step_Gradient(const sp_mat &V_0){
         for(uword beta=0 ; beta<grad.n_cols ; beta++){
             sum=0;
             for(uword i=0 ; i<UH.n_rows ; i++){
-                sum+=UH(i,alpha)*(UH.row(i)*V_0.col(beta)-build_S(i,beta,URM_,U_old,H_old,V_old));
+                sum+=UH(i,alpha)*(as_scalar(UH.row(i)*V_0.col(beta))-build_S(i,beta,URM_,U_old_,H_old_,V_old_));
             }
             grad(alpha,beta)=2*sum;
         }
@@ -44,14 +44,14 @@ sp_mat AMF::solve_V_One_Step_Gradient(const sp_mat &V_0){
     sp_mat grad_tilda=project_ICM(grad);
 
     // Projection of the gradient on the matrix space whose columns sum to zero
-    for(uword j=0 ; j<grad_tilda.cols ; j++){
+    for(uword j=0 ; j<grad_tilda.n_cols ; j++){
         orthogonal_projection(grad_tilda.col(j));
     }
 
     // Computation of t
     double t=1/norm(UH.t()*UH,2);
-    for(uword alpha=0 ; alpha<grad_tilda.rows ; alpha++){
-        for(uword beta=0 ; beta<grad_tilda.cols ; beta++){
+    for(uword alpha=0 ; alpha<grad_tilda.n_rows ; alpha++){
+        for(uword beta=0 ; beta<grad_tilda.n_cols ; beta++){
             if(grad_tilda(alpha,beta)>0){
                 if (V_0(alpha,beta)==0){
                     std::cerr<<"ERROR : V_0("<<alpha<<","<<beta<<")=0 but grad_tilda("<<alpha<<","<<beta<<")>0 !!"<<std::endl;
@@ -85,13 +85,13 @@ sp_mat AMF::project_ICM(const mat &G){
     return A;
 }
 
-void AMF::othogonal_projection(sp_mat &v){
+void AMF::orthogonal_projection(vec &v){
 
     // Check that v is a column vector
     if(!v.is_colvec()){
         std::cerr << "ERROR in othogonal_projection : v must be a column vector !!!" << std::endl;
     }
-    sp_mat u(v.rows,v.cols,fill::zeros);
+    sp_mat u(v.n_rows,v.n_cols);
     uword n_nonzero(0);
     for (uword i = 0 ; i<v.n_rows ; i++){
         if (v(i,0)!=0){
