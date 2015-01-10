@@ -25,8 +25,10 @@ void AMF::solve_V(){
 
 sp_mat AMF::solve_V_One_Step_Gradient(const sp_mat &V_0){
 
-    // Computation of the gradient of f=||S-UHV||^2
+    std::cout<<"Solving One gradient Step"<<std::endl;
 
+    // Computation of the gradient of f=||S-UHV||^2
+    std::cout<<"Solving One gradient Step : computing gradient"<<std::endl;
     mat UH = U_*H_;
     mat grad(V_0.n_rows,V_0.n_cols,fill::zeros);
     double sum(0);
@@ -39,19 +41,18 @@ sp_mat AMF::solve_V_One_Step_Gradient(const sp_mat &V_0){
             grad(alpha,beta)=2*sum;
         }
     }
-
     // Projection of the gradient on C
+    std::cout<<"Solving One gradient Step : projecting on C"<<std::endl;
     sp_mat grad_tilda=project_ICM(grad);
+    grad_tilda.print("grad = ");
 
     // Projection of the gradient on the matrix space whose columns sum to zero
-    // for(uword j=0 ; j<grad_tilda.n_cols ; j++){
-    //     orthogonal_projection(grad_tilda.col(j));
-    // }
+    std::cout<<"Solving One gradient Step : orthogonal_projection"<<std::endl;
     orthogonal_projection(grad_tilda);
-
-
+    grad_tilda.print("grad = ");
 
     // Computation of t
+    std::cout<<"Solving One gradient Step : computing t"<<std::endl;
     double t=1/norm(UH.t()*UH,2);
     for(uword alpha=0 ; alpha<grad_tilda.n_rows ; alpha++){
         for(uword beta=0 ; beta<grad_tilda.n_cols ; beta++){
@@ -64,6 +65,7 @@ sp_mat AMF::solve_V_One_Step_Gradient(const sp_mat &V_0){
             }
         }
     }
+    std::cout<<"t = "<<t<<std::endl;
     // Computation of V^
     return V_0-t*grad_tilda;
 
