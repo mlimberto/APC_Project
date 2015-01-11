@@ -32,10 +32,6 @@ using namespace arma;
 // or 
 // S(i,j) = (U*H*V)(i,j) if URM(i,j) == 0
 double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V ) ;
-mat build_S_by_column(uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V );
-mat project_URM(const SpMat<double>& URM,const mat &S);
-
-
 
 // This function evaluates ||S - UHV ||^2  + lambda * (|| U ||^2 + || H ||^2 ) where
 // ||*|| refers to the Frobenius norm 
@@ -57,7 +53,7 @@ void get_Positive_Matrix(Mat<double> &U) ;
 
 // Returns true if constraints on V are satisfied
 // X is the ICM matrix
-bool check_V_Constraint(const SpMat<double> &V,const sp_umat &X) ;
+bool check_V_Constraint(const SpMat<double> &V,const SpMat<int>& X) ; 
 
 bool check_Positive_Matrix(const Mat<double> &U) ;
 

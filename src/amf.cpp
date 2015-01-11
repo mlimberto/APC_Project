@@ -194,27 +194,9 @@ bool AMF::initialize_URM_Locations(std::string matrix_filename){
     return true;
 }
 
-void AMF::initialize_matrices(){
+void AMF::initialize_matrices()
+{
 
-    // Initialize V
-    std::cout <<"Inizializing V_old..."<<std::endl;
-    uword n_nonzero(0);
-    V_old_=sp_mat(ICM_.n_rows,ICM_.n_cols);
-    for (uword j = 0 ; j < ICM_.n_cols ; ++j){
-        n_nonzero=0;
-        for (uword i = 0 ; i<ICM_.n_rows ; ++i){
-            if(ICM_(i,j)>0){
-                V_old_(i,j)=1;
-                n_nonzero+=1;
-            }
-
-        }
-        if (n_nonzero!=0){
-        V_old_.col(j)=V_old_.col(j)/(n_nonzero);
-        }else{
-            std::cout<<"ERROR : columnn "<<j<<" of ICM is zero everywhere"<<std::endl;
-        }
-    }
 }
 
 

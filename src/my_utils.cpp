@@ -23,30 +23,6 @@ double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,co
 		return as_scalar(U.row(i)*H*V.col(j));
 	}
 }
-mat build_S_by_column(uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V ){
-    mat c=(U*H*V.col(j));
-    for(uword i=0; i<URM.n_rows; ++i){
-        if (URM(i,j) != 0){
-            c(i,0)=URM(i,j);
-        }
-    }
-    return c;
-}
-mat project_URM(const SpMat<double>& URM, const mat &S){
-    mat m=S;
-    if (S.n_cols != URM.n_cols || S.n_rows != URM.n_rows){
-        std::cerr << "ERROR in project_URM : Inconsistent matrices !!!" << std::endl;
-    }else{
-        for(uword i=0; i<URM.n_rows; ++i){
-            for(uword j=0; j<URM.n_cols; ++j){
-                if (URM(i,j) != 0){
-                    m(i,j)=URM(i,j);
-                }
-            }
-        }
-    }
-    return m;
-}
 
 
 double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
@@ -83,7 +59,7 @@ void get_Positive_Matrix(Mat<double> &U)
 ///////////////////////////////////
 
 
-bool check_V_Constraint(const SpMat<double>& V,const sp_umat &X)
+bool check_V_Constraint(const SpMat<double>& V,const SpMat<int>& X)
 {
 	// CHECK 1
 	// All zero elements of X must be zero elements of V 
@@ -98,9 +74,9 @@ bool check_V_Constraint(const SpMat<double>& V,const sp_umat &X)
 	// TODO This loop is inefficient, we could use the CSC format to perform
 	// this check, not very important though
 
-    for (std::size_t i = 0 ; i<X.n_rows ; ++i)
+	for (std::size_t i = 0 ; i<X.n_cols ; ++i)
 	{
-        for (std::size_t j = 0 ; j < X.n_cols ; ++j)
+		for (std::size_t j = 0 ; j < X.n_rows ; ++j)
 		{	
 			if (X(i,j)==0 && V(i,j)!=0)
 			{
