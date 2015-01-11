@@ -31,25 +31,39 @@ sp_mat AMF::solve_V_One_Step_Gradient(const sp_mat &V_0){
     std::cout<<"Solving One gradient Step : computing gradient"<<std::endl;
     mat UH = U_*H_;
     mat grad(V_0.n_rows,V_0.n_cols,fill::zeros);
-    double sum(0);
-    for (uword alpha = 0 ; alpha<grad.n_rows ; alpha++){
-        for(uword beta=0 ; beta<grad.n_cols ; beta++){
-            sum=0;
-            for(uword i=0 ; i<UH.n_rows ; i++){
-                sum+=UH(i,alpha)*(as_scalar(UH.row(i)*V_0.col(beta))-build_S(i,beta,URM_,U_old_,H_old_,V_old_));
-            }
-            grad(alpha,beta)=2*sum;
-        }
-    }
+    //double sum(0);
+    //for (uword alpha = 0 ; alpha<grad.n_rows ; alpha++){
+      //  for(uword beta=0 ; beta<grad.n_cols ; beta++){
+        //    sum=0;
+          //  for(uword i=0 ; i<UH.n_rows ; i++){
+            //    sum+=UH(i,alpha)*(as_scalar(UH.row(i)*V_0.col(beta))-build_S(i,beta,URM_,U_old_,H_old_,V_old_));
+           // }
+            //grad(alpha,beta)=2*sum;
+       // }
+    //}
+
+    //for (uword alpha = 0 ; alpha<grad.n_rows ; alpha++){
+      //  for(uword beta=0 ; beta<grad.n_cols ; beta++){
+        //    std::cout<<"("<<alpha<<","<<beta<<")"<<std::endl;
+          //  grad(alpha,beta)=2*dot(UH.col(alpha),(UH*V_0.col(beta)-build_S_by_column(beta,URM_,U_old_,H_old_,V_old_)));
+        //}
+    //}
+
+    grad=2*UH.t()*(UH*V_0-project_URM(URM_,U_old_*H_old_*V_old_));
+    //for (uword alpha = 0 ; alpha<grad.n_rows ; alpha++){
+      //  std::cout<<alpha<<std::endl;
+        //grad.row(alpha)=UH.col(alpha).t()*(UH*V_0-S);
+    //}
+
     // Projection of the gradient on C
     std::cout<<"Solving One gradient Step : projecting on C"<<std::endl;
     sp_mat grad_tilda=project_ICM(grad);
-    grad_tilda.print("grad = ");
+   // grad_tilda.print("grad = ");
 
     // Projection of the gradient on the matrix space whose columns sum to zero
     std::cout<<"Solving One gradient Step : orthogonal_projection"<<std::endl;
     orthogonal_projection(grad_tilda);
-    grad_tilda.print("grad = ");
+    //grad_tilda.print("grad = ");
 
     // Computation of t
     std::cout<<"Solving One gradient Step : computing t"<<std::endl;
