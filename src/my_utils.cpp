@@ -59,7 +59,7 @@ void get_Positive_Matrix(Mat<double> &U)
 ///////////////////////////////////
 
 
-bool check_V_Constraint(const SpMat<double>& V,const SpMat<int>& X)
+bool check_V_Constraint(const SpMat<double>& V,const sp_umat &X)
 {
 	// CHECK 1
 	// All zero elements of X must be zero elements of V 
@@ -74,9 +74,9 @@ bool check_V_Constraint(const SpMat<double>& V,const SpMat<int>& X)
 	// TODO This loop is inefficient, we could use the CSC format to perform
 	// this check, not very important though
 
-	for (std::size_t i = 0 ; i<X.n_cols ; ++i)
+    for (std::size_t i = 0 ; i<X.n_rows ; ++i)
 	{
-		for (std::size_t j = 0 ; j < X.n_rows ; ++j)
+        for (std::size_t j = 0 ; j < X.n_cols ; ++j)
 		{	
 			if (X(i,j)==0 && V(i,j)!=0)
 			{

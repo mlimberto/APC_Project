@@ -47,12 +47,24 @@ bool test_orthogonal_projection()
     amf.H_=randu<mat>(amf.get_n_latent_factors(),amf.ICM_.n_rows);
     amf.U_old_=randu<mat>(amf.URM_.n_rows,amf.get_n_latent_factors());
     amf.H_old_=randu<mat>(amf.get_n_latent_factors(),amf.ICM_.n_rows);
-    amf.V_old_=speye<sp_mat>(amf.ICM_.n_rows,amf.ICM_.n_cols);
-    cout<<"object function before gradient = "<<evaluate_Obj_Function(amf.URM_,amf.U_,amf.H_,amf.V_old_,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_)<<endl;
+    amf.initialize_matrices();
+    cout<<"Checking constraints on V_old_..."<<endl;
+    amf.ICM_.col(0).print("First column of ICM :");
+    amf.V_old_.col(0).print("First column of V_old_ :");
+    check_V_Constraint(amf.V_old_,amf.ICM_);
+
+    cout<<"Evaluating object function ...";
+    double before=evaluate_Obj_Function(amf.URM_,amf.U_,amf.H_,amf.V_old_,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_);
+    cout<<" Object function before gradient = "<<before<<endl;
     sp_mat V_hat=amf.solve_V_One_Step_Gradient(amf.V_old_);
-    cout<<"object function after gradient = "<<evaluate_Obj_Function(amf.URM_,amf.U_,amf.H_,V_hat,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_)<<endl;
     sp_mat diff=amf.V_old_-V_hat;
     diff.print("V_old_-V_hat : ");
+    cout<<"object function before gradient = "<<before<<endl;
+    cout<<"Evaluating object function ...";
+    cout<<"object function after gradient = "<<evaluate_Obj_Function(amf.URM_,amf.U_,amf.H_,V_hat,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_)<<endl;
+    cout<<"Checking constraints on V_hat..."<<endl;
+    check_V_Constraint(V_hat,amf.ICM_);
+
     //amf.orthogonal_projection(A);
     //A.print("Resulting matrix");
 
