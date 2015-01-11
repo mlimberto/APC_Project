@@ -31,17 +31,17 @@ class AMF
         // Parameters
         double lambda_ ; // Over-fitting parameter
 
-        int n_max_iter_ ; // maximum number of iterations
+        unsigned int n_max_iter_ ; // maximum number of iterations
         double toll_ ; // Stop criterium 
 
-        int n_max_iter_gradient_ ; // Same as above for the projected gradient method
+        unsigned int n_max_iter_gradient_ ; // Same as above for the projected gradient method
         double toll_gradient_;
         double gradient_step_; // Length of the gradient step
 
-        int r_; // number of latent factors
-        int n_; // users
-        int m_; // items
-        int k_; // labels
+        uword r_; // number of latent factors
+        uword n_; // users
+        uword m_; // items
+        uword k_; // labels
     
         // Matrices
         sp_mat URM_;  // user-rating matrix, given in the dataset
@@ -99,20 +99,20 @@ public :
     // SET METHODS
 
     inline void set_lambda(double lambda) { lambda_ = lambda; }
-    inline void set_n_max_iter(int n) { n_max_iter_ = n; }
+    inline void set_n_max_iter(unsigned int n) { n_max_iter_ = n; }
     inline void set_toll(double toll) { toll_ = toll; }
-    inline void set_n_latent_factors(int r) { r_ = r; }
-    inline void set_n_max_iter_gradient(int n) { n_max_iter_gradient_ = n; }
+    inline void set_n_latent_factors(uword r) { r_ = r; }
+    inline void set_n_max_iter_gradient(unsigned int n) { n_max_iter_gradient_ = n; }
     inline void set_toll_gradient(double toll) { toll_gradient_ = toll; }
     inline void set_gradient_step(double g_step) { gradient_step_ = g_step; }
     
     // GET METHODS
 
     inline double get_lambda() { return lambda_; }
-    inline int get_n_max_iter() { return n_max_iter_; }
+    inline unsigned int get_n_max_iter() { return n_max_iter_; }
     inline double get_toll() { return toll_; }
-    inline int get_n_latent_factors() { return r_; }
-    inline int get_n_max_iter_gradient() { return n_max_iter_gradient_; }
+    inline uword get_n_latent_factors() { return r_; }
+    inline unsigned int get_n_max_iter_gradient() { return n_max_iter_gradient_; }
     inline double get_toll_gradient() { return toll_gradient_; }
     inline double get_gradient_step() { return gradient_step_; }
 

@@ -38,6 +38,10 @@ AMF::AMF(std::string URM_filename, std::string ICM_filename, std::string param_f
 		std::cout << "WARNING : Initialization of ICM matrix from file didn't work properly" << std::endl;
 	}
 
+	n_ = URM_.n_rows;
+	m_ = ICM_.n_cols;
+	k_ = ICM_.n_rows;
+
 }
 
 
