@@ -128,27 +128,3 @@ void AMF::orthogonal_projection(sp_mat &G){
     }
 
 }
-sp_mat AMF::solve_V_One_Step_Gradient2(const sp_mat &V_0){
-    std::cout<<"Solving One gradient Step2"<<std::endl;
-
-    // Computation of the gradient of f=||S-UHV||^2
-    std::cout<<"Solving One gradient Step2 : computing gradient"<<std::endl;
-    mat UH = U_*H_;
-    mat grad(V_0.n_rows,V_0.n_cols,fill::zeros);
-    mat V_hat=V_0-gradient_step_*grad;
-    sp_mat T_hat=project_ICM(V_hat);
-    sp_mat t_hat;
-    uvec sorted_indeces;
-    for(uword j=0; j<T_hat.n_cols;++j){
-        sorted_indeces=sort_index(T_hat.col(j),"descend");
-        t_hat=sort(T_hat.col(j),"descend");
-        uword i=0;
-        double tau=0;
-        doubel tau_old=0;
-        while(t_hat(i)!=0){
-            tau_old=t_hat()
-            i++;
-        }
-    }
-
-}
