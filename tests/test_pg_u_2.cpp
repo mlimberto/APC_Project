@@ -52,6 +52,8 @@ bool test_PG_U(AMF & amf )
 
 	amf.U_.print("U matrix");
 
+	cout << "Lambda = " << amf.lambda_ << endl;
+
 	cout << "End of the test function" << endl;
 
 	return true;

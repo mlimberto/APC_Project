@@ -78,13 +78,20 @@ void AMF::solve_pg_U_With_Log()
 		prec_obj = curr_obj;
 		curr_obj = evaluate_Obj_Function(URM_,U_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_);
 
-		if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
-			stop_criterion = true;
+		// if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
+		// 	stop_criterion = true;
 
 		// Save information on logfile
 		logfile << curr_obj << "\n";
 
+		// Print information
+		std::cout << "Iteration " << n+1 << " : Objective function = " << curr_obj << std::endl;
+
 	}
+
+	#ifndef NDEBUG
+	U_.print("U matrix");
+	#endif
 
 	logfile.close();
 }

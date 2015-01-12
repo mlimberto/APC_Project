@@ -96,6 +96,9 @@ public :
     // SOLVING METHODS
         
     void solve();
+    
+    void solve_With_Log();
+
 
     // SET METHODS
 

@@ -39,9 +39,6 @@ mat project_URM(const SpMat<double>& URM,const mat &S);
 
 // This function evaluates ||S - UHV ||^2  + lambda * (|| U ||^2 + || H ||^2 ) where
 // ||*|| refers to the Frobenius norm 
-
-
-
 double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
 							 const Mat<double>& H,const SpMat<double>& V,
 							 const Mat<double>& U_old,const Mat<double>& H_old,

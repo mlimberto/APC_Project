@@ -38,9 +38,16 @@ AMF::AMF(std::string URM_filename, std::string ICM_filename, std::string param_f
 		std::cout << "WARNING : Initialization of ICM matrix from file didn't work properly" << std::endl;
 	}
 
-    n_ = URM_.n_rows;
-    m_ = ICM_.n_cols;
-    k_ = ICM_.n_rows;
+	// INITIALIZE ALL THE OTHER STUFF
+
+	n_ = URM_.n_rows;
+	m_ = ICM_.n_cols;
+	k_ = ICM_.n_rows;
+
+	initialize_matrices();
+
+
+	std::cout << "...done!" << std::endl;
 
 }
 
@@ -200,8 +207,19 @@ bool AMF::initialize_URM_Locations(std::string matrix_filename){
 
 void AMF::initialize_matrices(){
 
+	// Initialize U 
+	std::cout<< "Initializing U_old..." << std::endl;
+
+	// U_old_ = 10*randu<mat>(n_,r_);
+	U_old_ = mat(n_,r_,fill::ones);
+
+	// Initialize H
+	std::cout<< "Initializing H_old..." << std::endl;
+
+	H_old_ = mat(r_,k_,fill::eye);
+
     // Initialize V
-    std::cout <<"Inizializing V_old..."<<std::endl;
+    std::cout <<"Initializing V_old..."<<std::endl;
     uword n_nonzero(0);
     V_old_=sp_mat(ICM_.n_rows,ICM_.n_cols);
     for (uword j = 0 ; j < ICM_.n_cols ; ++j){
@@ -224,9 +242,18 @@ void AMF::initialize_matrices(){
 
 void AMF::solve() 
 {
+
 	solve_pg_U();
 
 	// Remember to swap the variables
 
 }
 
+void AMF::solve_With_Log() 
+{
+
+	solve_pg_U_With_Log();
+
+	// Remember to swap the variables
+
+}

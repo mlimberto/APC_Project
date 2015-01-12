@@ -23,13 +23,21 @@ int main(int argc,char** argv)
 
 	// Create an instance of the AMF solver 
 
-	std::cout << "Creating instance of AMF ... " ;
-
 	AMF amf(argv[1],argv[2],argv[3]) ;
 
-	std::cout << "Done!" << std::endl;
+	// Print some data
 
-	amf.solve();
+	std::cout << "We have " << amf.get_U().n_rows << " users" <<std::endl;
+	std::cout << "We have " << amf.get_U().n_cols << " latent factors" <<std::endl;
+	std::cout << "We have " << amf.get_V().n_rows << " labels" <<std::endl;
+	std::cout << "We have " << amf.get_V().n_cols << " items" <<std::endl;
+	// std::cout << "We have " << amf.get_n_max_iter_gradient() << " gradient iterations" <<std::endl;
+
+	// Solve
+
+	amf.solve_With_Log();
+
+
 
 
 
