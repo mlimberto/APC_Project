@@ -51,7 +51,7 @@ class AMF
         umat URM_Location_Matrix_;
         umat ICM_Location_Matrix_;
 
-        vec URM_Values;
+        vec URM_Values_;
         uvec ICM_Values_;
 
         SpMat<double> V_,V_old_ ; // Matrix V
