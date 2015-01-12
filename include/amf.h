@@ -44,9 +44,15 @@ class AMF
         uword k_; // labels
 
     
-        // Matrices
+        // Matrices and their coordinates
         sp_mat URM_;  // user-rating matrix, given in the dataset
         sp_umat ICM_; // item-content matrix, given in the dataset
+
+        umat URM_Location_Matrix_;
+        umat ICM_Location_Matrix_;
+
+        vec URM_Values;
+        uvec ICM_Values_;
 
         SpMat<double> V_,V_old_ ; // Matrix V
         Mat<double> U_,U_old_,H_,H_old_ ; // Matrices U,H

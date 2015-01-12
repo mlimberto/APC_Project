@@ -169,6 +169,8 @@ bool AMF::initialize_ICM_Locations(std::string matrix_filename){
     // mentre la vecchia URM_ viene distrutta dal distruttore
     // alla fine dell'esecuzione della funzione
     std::swap(ICM_,icm);
+    std::swap(ICM_Location_Matrix_,Location_Matrix);
+    std::swap(ICM_Values_,Values);
 
     return true;
 }
@@ -193,14 +195,11 @@ bool AMF::initialize_URM_Locations(std::string matrix_filename){
         i++;
     }
 
-    //#ifndef NDEBUG
-    //Location_Matrix.print("Location Matrix : ");
-    //Values.print("Values Vector: ");
-    //#endif
-
     arma::sp_mat urm(Location_Matrix,Values);
 
     std::swap(URM_,urm);
+    std::swap(URM_Location_Matrix_,Location_Matrix);
+    std::swap(URM_Values_,Values);
 
     return true;
 }
