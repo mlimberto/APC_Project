@@ -207,15 +207,15 @@ bool AMF::initialize_URM_Locations(std::string matrix_filename){
 void AMF::initialize_matrices(){
 
 	// Initialize U 
-    //std::cout<< "Initializing U_old..." << std::endl;
+	std::cout<< "Initializing U_old..." << std::endl;
 
 	// U_old_ = 10*randu<mat>(n_,r_);
-    //U_old_ = mat(n_,r_,fill::ones);
+	U_old_ = mat(n_,r_,fill::ones);
 
 	// Initialize H
-    //std::cout<< "Initializing H_old..." << std::endl;
+	std::cout<< "Initializing H_old..." << std::endl;
 
-    //H_old_ = mat(r_,k_,fill::eye);
+	H_old_ = mat(r_,k_,fill::eye);
 
     // Initialize V
     std::cout <<"Initializing V_old..."<<std::endl;
@@ -255,22 +255,4 @@ void AMF::solve_With_Log()
 
 	// Remember to swap the variables
 
-}
-
-
-mat AMF::project_URM_by_column(uword j,const mat &S){
-    mat m=S;
-    if (S.n_rows != URM_.n_rows){
-        std::cerr << "ERROR in project_URM_by_column : Inconsistent matrices !!!" << std::endl;
-    }else if(S.n_cols != 1){
-        std::cerr << "ERROR in project_URM_by_column : You have to pass a column !!!" << std::endl;
-
-    }else{
-        uvec q1=get_Vector_Of_Indices(URM_Location_Matrix_);
-        uvec q2=find(q1>=URM_.n_rows*j && q1<URM_.n_rows*(j+1));
-        m.elem(q1(q2)-URM_.n_rows*j)=URM_Values_(q2);
-
-
-    }
-    return m;
 }
