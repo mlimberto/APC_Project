@@ -51,7 +51,7 @@ class AMF
         umat URM_Location_Matrix_;
         umat ICM_Location_Matrix_;
 
-        vec URM_Values;
+        vec URM_Values_;
         uvec ICM_Values_;
 
         SpMat<double> V_,V_old_ ; // Matrix V
@@ -80,7 +80,9 @@ class AMF
         void solve_V();
 
         sp_mat solve_V_One_Step_Gradient(const sp_mat &V_0);
+        sp_mat solve_V_One_Step_Gradient2(const sp_mat &V_0);
         sp_mat project_ICM(const mat &G);
+        mat project_URM_by_column(uword j, const mat &S);
 
         void orthogonal_projection(sp_mat &G);
     
@@ -88,6 +90,8 @@ public :
 
     friend bool test_PG_U(AMF & amf); // For testing purposes
     friend bool test_orthogonal_projection();
+    friend bool test_project_ICM();
+    friend bool test_check_method2();
 
     // CONSTRUCTORS and INITIALIZERS
     
