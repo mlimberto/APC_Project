@@ -46,6 +46,7 @@ double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
 
 void get_Positive_Matrix(Mat<double> &U) ;
 
+uvec get_Vector_Of_Indices(const umat &L);
 
 ///////////////////////////////////
 ////// DEBUGGING FUNCTIONS ////////

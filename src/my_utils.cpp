@@ -32,6 +32,7 @@ mat build_S_by_column(uword j,const SpMat<double>& URM,const Mat<double>& U,cons
     }
     return c;
 }
+
 mat project_URM(const SpMat<double>& URM, const mat &S){
     mat m=S;
     if (S.n_cols != URM.n_cols || S.n_rows != URM.n_rows){
@@ -76,6 +77,21 @@ void get_Positive_Matrix(Mat<double> &U)
 		if (*i < 0)
 			*i = 0;
 	}
+}
+
+uvec get_Vector_Of_Indices(const umat &L){
+
+    // Functino to get de vector of indices from the location matrix
+    if (L.n_rows != 2){
+        std::cerr << "L has to be a location matrix (size 2xN) !!!" << std::endl;
+    }
+
+    uword N_rows=L.row(0).max()+1;
+    uvec v(L.n_cols);
+    for(uword j=0; j<L.n_cols;++j){
+        v(j)=N_rows*L(1,j)+L(0,j);
+    }
+    return v;
 }
 
 ///////////////////////////////////
