@@ -207,15 +207,15 @@ bool AMF::initialize_URM_Locations(std::string matrix_filename){
 void AMF::initialize_matrices(){
 
 	// Initialize U 
-	std::cout<< "Initializing U_old..." << std::endl;
+    //std::cout<< "Initializing U_old..." << std::endl;
 
 	// U_old_ = 10*randu<mat>(n_,r_);
-	U_old_ = mat(n_,r_,fill::ones);
+    //U_old_ = mat(n_,r_,fill::ones);
 
 	// Initialize H
-	std::cout<< "Initializing H_old..." << std::endl;
+    //std::cout<< "Initializing H_old..." << std::endl;
 
-	H_old_ = mat(r_,k_,fill::eye);
+    //H_old_ = mat(r_,k_,fill::eye);
 
     // Initialize V
     std::cout <<"Initializing V_old..."<<std::endl;

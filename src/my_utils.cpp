@@ -78,6 +78,22 @@ void get_Positive_Matrix(Mat<double> &U)
 	}
 }
 
+uvec get_Vector_Of_Indices(const umat &L){
+
+    // Functino to get de vector of indices from the location matrix
+    if (L.n_rows != 2){
+        std::cerr << "L has to be a location matrix (size 2xN) !!!" << std::endl;
+    }
+
+    uword N_rows=L.row(0).max()+1;
+    uvec v(L.n_cols);
+    for(uword j=0; j<L.n_cols;++j){
+        v(j)=(L(0,j)+1)*(L(1,j)+1)+(N_rows-(L(0,j))-1)*L(1,j)-1;
+    }
+    return v;
+}
+
+
 ///////////////////////////////////
 ////// DEBUGGING FUNCTIONS ////////
 ///////////////////////////////////

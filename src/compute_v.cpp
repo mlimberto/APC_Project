@@ -30,33 +30,10 @@ sp_mat AMF::solve_V_One_Step_Gradient(const sp_mat &V_0){
     // Computation of the gradient of f=||S-UHV||^2
     std::cout<<"Solving One gradient Step : computing gradient"<<std::endl;
     mat UH = U_*H_;
-    mat grad(V_0.n_rows,V_0.n_cols,fill::zeros);
-    //double sum(0);
-    //for (uword alpha = 0 ; alpha<grad.n_rows ; alpha++){
-      //  for(uword beta=0 ; beta<grad.n_cols ; beta++){
-        //    sum=0;
-          //  for(uword i=0 ; i<UH.n_rows ; i++){
-            //    sum+=UH(i,alpha)*(as_scalar(UH.row(i)*V_0.col(beta))-build_S(i,beta,URM_,U_old_,H_old_,V_old_));
-           // }
-            //grad(alpha,beta)=2*sum;
-       // }
-    //}
+    mat grad=2*UH.t()*(UH*V_0-project_URM(URM_,U_old_*H_old_*V_old_));
 
-    //for (uword alpha = 0 ; alpha<grad.n_rows ; alpha++){
-      //  for(uword beta=0 ; beta<grad.n_cols ; beta++){
-        //    std::cout<<"("<<alpha<<","<<beta<<")"<<std::endl;
-          //  grad(alpha,beta)=2*dot(UH.col(alpha),(UH*V_0.col(beta)-build_S_by_column(beta,URM_,U_old_,H_old_,V_old_)));
-        //}
-    //}
-
-    grad=2*UH.t()*(UH*V_0-project_URM(URM_,U_old_*H_old_*V_old_));
-    //for (uword alpha = 0 ; alpha<grad.n_rows ; alpha++){
-      //  std::cout<<alpha<<std::endl;
-        //grad.row(alpha)=UH.col(alpha).t()*(UH*V_0-S);
-    //}
-
-    // Projection of the gradient on C
-    std::cout<<"Solving One gradient Step : projecting on C"<<std::endl;
+    // Projection of the gradient on ICM
+    std::cout<<"Solving One gradient Step : projecting on ICM"<<std::endl;
     sp_mat grad_tilda=project_ICM(grad);
    // grad_tilda.print("grad = ");
 
@@ -89,19 +66,12 @@ sp_mat AMF::project_ICM(const mat &G){
 
     // Funtion to set to zero the elements of the matrix B where ICM is zero
 
-    if (G.n_cols != ICM_.n_cols || G.n_rows != ICM_.n_rows)
-    {
+    if (G.n_cols != ICM_.n_cols || G.n_rows != ICM_.n_rows)    {
         std::cerr << "ERROR in project_ICM : Inconsistent matrices !!!" << std::endl;
     }
 
-    sp_mat A(ICM_.n_rows,ICM_.n_cols);
-
-    for (uword i = 0 ; i<ICM_.n_rows ; ++i){
-        for (uword j = 0 ; j < ICM_.n_cols ; ++j){
-            A(i,j)=G(i,j)*(ICM_(i,j)>0);
-        }
-    }
-    return A;
+    sp_mat P(ICM_Location_Matrix_,G.elem(get_Vector_Of_Indices(ICM_Location_Matrix_)));
+    return P;
 }
 
 void AMF::orthogonal_projection(sp_mat &G){
@@ -126,5 +96,50 @@ void AMF::orthogonal_projection(sp_mat &G){
             v=v-as_scalar(v.t()*u)*u;
         }
     }
+
+}
+
+sp_mat AMF::solve_V_One_Step_Gradient2(const sp_mat &V_0){
+    std::cout<<"Solving One gradient Step2"<<std::endl;
+
+    // Computation of the gradient of f=||S-UHV||^2
+    std::cout<<"Solving One gradient Step2 : computing gradient"<<std::endl;
+    mat UH = U_*H_;
+    mat grad=2*UH.t()*(UH*V_0-project_URM(URM_,U_old_*H_old_*V_old_));
+    double t=1/norm(UH.t()*UH,2);
+    mat V_hat=V_0-t*grad;
+
+    // Projection on ICM
+    std::cout<<"Solving One gradient Step : projecting V_hat on ICM"<<std::endl;
+    sp_mat T_hat=project_ICM(V_hat);
+    sp_mat V_new(V_0.n_rows,V_0.n_cols);
+
+    uvec sorted_indices;
+    std::cout<<"Solving One gradient Step : projecting on S"<<std::endl;
+
+    for(uword j=0; j<T_hat.n_cols;++j){
+        std::cout<<"j = "<<j<<std::endl;
+        sorted_indices=sort_index(mat(T_hat).col(j),"descend");
+        vec t_hat=sort(mat(T_hat).col(j),"descend");
+
+        double tau=0;
+        double tau_old=0;
+        uword i=0;
+        while(t_hat(i)!=0 && i<t_hat.n_elem){
+            // Computing tau
+            tau_old=(double)(sum(t_hat(span(0,i)))-1)/(i+1);
+            if(tau_old<t_hat(i)){
+                tau=tau_old;
+            }
+            i++;
+        }
+        i=0;
+        while(i<t_hat.n_elem && t_hat(i)-tau>0){
+             V_new(sorted_indices(i),j)=t_hat(i)-tau;
+            i++;
+        }
+
+    }
+    return V_new;
 
 }
