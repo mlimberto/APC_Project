@@ -100,8 +100,6 @@ public :
     AMF(std::string URM_filename, std::string ICM_filename, std::string param_filename);
 
     bool initialize_Parameters(std::string filename);
-    bool initialize_ICM_Locations(std::string matrix_filename);
-    bool initialize_URM_Locations(std::string matrix_filename);
     
     // SOLVING METHODS
         

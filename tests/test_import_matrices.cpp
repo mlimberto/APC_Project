@@ -3,25 +3,32 @@
 #include <vector>
 
 #include "my_utils.h"
-#include "amf.h"
+
+using namespace std;
+using namespace arma;
+
 int main(int argc,char** argv)
 {
 
+    std::string matrixICM_filename("../dataset/Sampled_Dataset/icm_sampling.txt");
 
-    // Create instance for class AMF
+    std::string matrixURM_filename("../dataset/Sampled_Dataset/urm_sampling.txt");
 
-    AMF solver;
+    sp_umat M;
+    umat location_matrix;
+    Col<uword> values;
 
+    import_Sparse_Matrix<uword>(matrixICM_filename,M,location_matrix,values);
 
-    std::string matrixICM_filename("../APC_Project/dataset/Sampled_dataset/icm_sampling.txt");
-    solver.inizialize_ICM_Locations(matrixICM_filename);
-    solver.print_ICM();
-    std::string matrixURM_filename("../APC_Project/dataset/Sampled_dataset/urm_sampling.txt");
-    solver.inizialize_URM_Locations(matrixURM_filename);
-    solver.print_URM();
+    M.print();
 
+    SpMat<double> urm;
+    Col<double> val;
 
-    return 0;
+    import_Sparse_Matrix<double>(matrixURM_filename,urm,location_matrix,val);
+
+    urm.print();
+
 
     return 0;
 }

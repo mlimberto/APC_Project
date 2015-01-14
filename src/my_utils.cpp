@@ -13,6 +13,35 @@ using std::vector;
 
 // ricordarsi che gli indici di riga e colonna in c++ partono da 0 !!
 
+template<typename T>
+bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM,umat &location_mat,Col<T> &values)
+{
+    arma::umat RCi(2,1);
+    T val;
+    std::ifstream matrix_file(mfilename);
+
+    location_mat.reset();
+    values.reset();
+    MM.reset();
+
+    // Read the file and build the Location Matrix and the Values vector
+    unsigned int i=0;
+    while (matrix_file >> RCi(0,0) >> RCi(1,0) >> val){
+        location_mat.insert_cols(i,RCi);
+        values.resize(i+1);
+        values(i)=val;
+        i++;
+    }
+
+    MM = SpMat<T>(location_mat,values);
+
+	return true;
+}
+template bool import_Sparse_Matrix<uword>(std::string mfilename,SpMat<uword> &MM,umat &location_mat,Col<uword> &values);
+template bool import_Sparse_Matrix<double>(std::string mfilename,SpMat<double> &MM,umat &location_mat,Col<double> &values);
+
+
+
 double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V )
 {
 	if (URM(i,j) != 0){
@@ -23,6 +52,8 @@ double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,co
 		return as_scalar(U.row(i)*H*V.col(j));
 	}
 }
+
+
 mat build_S_by_column(uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V ){
     mat c=(U*H*V.col(j));
     for(uword i=0; i<URM.n_rows; ++i){
@@ -32,6 +63,7 @@ mat build_S_by_column(uword j,const SpMat<double>& URM,const Mat<double>& U,cons
     }
     return c;
 }
+
 
 mat project_URM(const SpMat<double>& URM, const mat &S){
     mat m=S;

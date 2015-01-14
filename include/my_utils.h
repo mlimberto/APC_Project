@@ -20,6 +20,8 @@ using namespace arma;
 ////// INPUT-OUTPUT FUNCTIONS /////
 ///////////////////////////////////
 
+template<typename T>
+bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM,umat &location_mat,Col<T> &values);
 
 
 
@@ -32,7 +34,9 @@ using namespace arma;
 // or 
 // S(i,j) = (U*H*V)(i,j) if URM(i,j) == 0
 double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V ) ;
+
 mat build_S_by_column(uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V );
+
 mat project_URM(const SpMat<double>& URM,const mat &S);
 
 

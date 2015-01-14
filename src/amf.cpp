@@ -28,12 +28,12 @@ AMF::AMF(std::string URM_filename, std::string ICM_filename, std::string param_f
 		std::cout << "WARNING : Initialization of parameters from file didn't work properly" << std::endl;
 	}
 
-	if (!initialize_URM_Locations(URM_filename))
+	if (!import_Sparse_Matrix<double>(URM_filename,URM_,URM_Location_Matrix_,URM_Values_))
 	{
 		std::cout << "WARNING : Initialization of URM matrix from file didn't work properly" << std::endl;
 	}
 
-	if (!initialize_ICM_Locations(ICM_filename))
+	if (!import_Sparse_Matrix<unsigned int>(ICM_filename,ICM_,ICM_Location_Matrix_,ICM_Values_))
 	{
 		std::cout << "WARNING : Initialization of ICM matrix from file didn't work properly" << std::endl;
 	}
@@ -143,66 +143,6 @@ bool AMF::initialize_Parameters(std::string filename)
 	return true;
 }
 
-bool AMF::initialize_ICM_Locations(std::string matrix_filename){
-    #ifndef NDEBUG
-    std::cout << "Importing ICM from file " << matrix_filename << std::endl;
-    #endif
-
-    arma::umat Location_Matrix;
-    arma::uvec Values;
-    arma::umat RCi(2,1);
-    unsigned int val;
-    std::ifstream matrix_file(matrix_filename);
-
-    // Read the file and build the Location Matrix and the Values vector
-    unsigned int i=0;
-    while (matrix_file >> RCi(0,0) >> RCi(1,0) >> val){
-        Location_Matrix.insert_cols(i,RCi);
-        Values.resize(i+1);
-        Values(i)=val;
-        i++;
-    }
-
-    arma::sp_umat icm(Location_Matrix,Values);
-
-    // Con lo swap la variabile urm prende il posto di URM_ 
-    // mentre la vecchia URM_ viene distrutta dal distruttore
-    // alla fine dell'esecuzione della funzione
-    std::swap(ICM_,icm);
-    std::swap(ICM_Location_Matrix_,Location_Matrix);
-    std::swap(ICM_Values_,Values);
-
-    return true;
-}
-
-bool AMF::initialize_URM_Locations(std::string matrix_filename){
-    #ifndef NDEBUG
-    std::cout << "Importing URM from file " << matrix_filename << std::endl;
-    #endif
-
-    arma::umat Location_Matrix;
-    arma::vec Values;
-    arma::umat RCi(2,1);
-    double val;
-    std::ifstream matrix_file(matrix_filename);
-
-    // Read the file and build the Location Matrix and the Values vector
-    unsigned int i=0;
-    while (matrix_file >> RCi(0,0) >> RCi(1,0) >> val){
-        Location_Matrix.insert_cols(i,RCi);
-        Values.resize(i+1);
-        Values(i)=val;
-        i++;
-    }
-
-    arma::sp_mat urm(Location_Matrix,Values);
-
-    std::swap(URM_,urm);
-    std::swap(URM_Location_Matrix_,Location_Matrix);
-    std::swap(URM_Values_,Values);
-
-    return true;
-}
 
 void AMF::initialize_matrices(){
 

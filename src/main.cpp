@@ -27,6 +27,8 @@ int main(int argc,char** argv)
 
 	// Print some data
 
+	amf.print_ICM();
+
 	std::cout << "We have " << amf.get_U().n_rows << " users" <<std::endl;
 	std::cout << "We have " << amf.get_U().n_cols << " latent factors" <<std::endl;
 	std::cout << "We have " << amf.get_V().n_rows << " labels" <<std::endl;
