@@ -7,6 +7,7 @@
 
 #include "amf.h"
 
+using namespace arma;
 
 //////////////////////////
 ////  METHODS       //////

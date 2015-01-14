@@ -13,18 +13,16 @@
 #include <fstream>
 #include <armadillo> 
 
-using namespace arma;
-
 
 ///////////////////////////////////
 ////// INPUT-OUTPUT FUNCTIONS /////
 ///////////////////////////////////
 
 template<typename T>
-bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM,umat &location_mat,Col<T> &values);
+bool import_Sparse_Matrix(std::string mfilename,arma::SpMat<T> &MM,arma::umat &location_mat,arma::Col<T> &values);
 
 template<typename T>
-bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM);
+bool import_Sparse_Matrix(std::string mfilename,arma::SpMat<T> &MM);
 
 
 ///////////////////////////////////
@@ -35,24 +33,24 @@ bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM);
 // S(i,j) = URM(i,j) if URM(i,j) != 0 
 // or 
 // S(i,j) = (U*H*V)(i,j) if URM(i,j) == 0
-double build_S(uword i, uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V ) ;
+double build_S(arma::uword i, arma::uword j,const arma::sp_mat& URM,const arma::mat& U,const arma::mat& H,const arma::sp_mat& V ) ;
 
-mat build_S_by_column(uword j,const SpMat<double>& URM,const Mat<double>& U,const Mat<double>& H,const SpMat<double>& V );
+arma::mat build_S_by_column(arma::uword j,const arma::sp_mat& URM,const arma::mat& U,const arma::mat& H,const arma::sp_mat& V );
 
-mat project_URM(const SpMat<double>& URM,const mat &S);
+arma::mat project_URM(const arma::sp_mat& URM,const arma::mat &S);
 
 
 
 // This function evaluates ||S - UHV ||^2  + lambda * (|| U ||^2 + || H ||^2 ) where
 // ||*|| refers to the Frobenius norm 
-double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
-							 const Mat<double>& H,const SpMat<double>& V,
-							 const Mat<double>& U_old,const Mat<double>& H_old,
-							 const SpMat<double>& V_old, const double lambda);
+double evaluate_Obj_Function(const arma::sp_mat& URM,const arma::mat& U,
+							 const arma::mat& H,const arma::sp_mat& V,
+							 const arma::mat& U_old,const arma::mat& H_old,
+							 const arma::sp_mat& V_old, const double lambda);
 
-void get_Positive_Matrix(Mat<double> &U) ;
+void get_Positive_Matrix(arma::mat &U) ;
 
-uvec get_Vector_Of_Indices(const umat &L);
+arma::uvec get_Vector_Of_Indices(const arma::umat &L);
 
 ///////////////////////////////////
 ////// DEBUGGING FUNCTIONS ////////
@@ -61,9 +59,9 @@ uvec get_Vector_Of_Indices(const umat &L);
 
 // Returns true if constraints on V are satisfied
 // X is the ICM matrix
-bool check_V_Constraint(const SpMat<double> &V,const sp_umat &X) ;
+bool check_V_Constraint(const arma::sp_mat &V,const arma::sp_umat &X) ;
 
-bool check_Positive_Matrix(const Mat<double> &U) ;
+bool check_Positive_Matrix(const arma::mat &U) ;
 
 
 

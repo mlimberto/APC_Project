@@ -15,8 +15,6 @@
 
 #include "my_utils.h"
 
-using namespace arma;
-
 
 // Definition of class AMF (Augmented matrix factorization)
 
@@ -38,24 +36,24 @@ class AMF
         double toll_gradient_;
         double gradient_step_; // Length of the gradient step
 
-        uword r_; // number of latent factors
-        uword n_; // users
-        uword m_; // items
-        uword k_; // labels
+        arma::uword r_; // number of latent factors
+        arma::uword n_; // users
+        arma::uword m_; // items
+        arma::uword k_; // labels
 
     
         // Matrices and their coordinates
-        sp_mat URM_;  // user-rating matrix, given in the dataset
-        sp_umat ICM_; // item-content matrix, given in the dataset
+        arma::sp_mat URM_;  // user-rating matrix, given in the dataset
+        arma::sp_umat ICM_; // item-content matrix, given in the dataset
 
-        umat URM_Location_Matrix_;
-        umat ICM_Location_Matrix_;
+        arma::umat URM_Location_Matrix_;
+        arma::umat ICM_Location_Matrix_;
 
-        vec URM_Values_;
-        uvec ICM_Values_;
+        arma::vec URM_Values_;
+        arma::uvec ICM_Values_;
 
-        SpMat<double> V_,V_old_ ; // Matrix V
-        Mat<double> U_,U_old_,H_,H_old_ ; // Matrices U,H
+        arma::sp_mat V_,V_old_ ; // Matrix V
+        arma::mat U_,U_old_,H_,H_old_ ; // Matrices U,H
 
     // METHODS
         void initialize_matrices();
@@ -67,24 +65,24 @@ class AMF
 
         void solve_pg_U_With_Log();
 
-        void solve_pg_U_One_Iteration(mat &G,const mat &A);
+        void solve_pg_U_One_Iteration(arma::mat &G,const arma::mat &A);
 
 
         void solve_pg_H();
 
         void solve_pg_H_With_Log();
 
-        void solve_pg_H_One_Iteration(mat &G, mat &A);
+        void solve_pg_H_One_Iteration(arma::mat &G, arma::mat &A);
 
 
         void solve_V();
 
-        sp_mat solve_V_One_Step_Gradient(const sp_mat &V_0);
-        sp_mat solve_V_One_Step_Gradient2(const sp_mat &V_0);
-        sp_mat project_ICM(const mat &G);
-        mat project_URM_by_column(uword j, const mat &S);
+        arma::sp_mat solve_V_One_Step_Gradient(const arma::sp_mat &V_0);
+        arma::sp_mat solve_V_One_Step_Gradient2(const arma::sp_mat &V_0);
+        arma::sp_mat project_ICM(const arma::mat &G);
+        arma::mat project_URM_by_column(arma::uword j, const arma::mat &S);
 
-        void orthogonal_projection(sp_mat &G);
+        void orthogonal_projection(arma::sp_mat &G);
     
 public :
 
@@ -113,7 +111,7 @@ public :
     inline void set_lambda(double lambda) { lambda_ = lambda; }
     inline void set_n_max_iter(unsigned int n) { n_max_iter_ = n; }
     inline void set_toll(double toll) { toll_ = toll; }
-    inline void set_n_latent_factors(uword r) { r_ = r; }
+    inline void set_n_latent_factors(arma::uword r) { r_ = r; }
     inline void set_n_max_iter_gradient(unsigned int n) { n_max_iter_gradient_ = n; }
     inline void set_toll_gradient(double toll) { toll_gradient_ = toll; }
     inline void set_gradient_step(double g_step) { gradient_step_ = g_step; }
@@ -123,14 +121,14 @@ public :
     inline double get_lambda() { return lambda_; }
     inline unsigned int get_n_max_iter() { return n_max_iter_; }
     inline double get_toll() { return toll_; }
-    inline uword get_n_latent_factors() { return r_; }
+    inline arma::uword get_n_latent_factors() { return r_; }
     inline unsigned int get_n_max_iter_gradient() { return n_max_iter_gradient_; }
     inline double get_toll_gradient() { return toll_gradient_; }
     inline double get_gradient_step() { return gradient_step_; }
 
-    inline mat& get_U() {return U_old_;} // Sarebbe meglio aggiungere delle const da qualche parte per essere sicuri che U,V,H non vengano toccate
-    inline mat& get_H() {return H_old_;}
-    inline sp_mat& get_V() {return V_old_;}
+    inline arma::mat& get_U() {return U_old_;} // Sarebbe meglio aggiungere delle const da qualche parte per essere sicuri che U,V,H non vengano toccate
+    inline arma::mat& get_H() {return H_old_;}
+    inline arma::sp_mat& get_V() {return V_old_;}
 
 
     inline void print_ICM(){ICM_.print("ICM =");}
