@@ -23,6 +23,8 @@ using namespace arma;
 template<typename T>
 bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM,umat &location_mat,Col<T> &values);
 
+template<typename T>
+bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM);
 
 
 ///////////////////////////////////

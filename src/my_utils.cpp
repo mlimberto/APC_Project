@@ -10,6 +10,8 @@
 using std::string;
 using std::vector;
 
+using namespace arma;
+
 
 // ricordarsi che gli indici di riga e colonna in c++ partono da 0 !!
 
@@ -39,6 +41,34 @@ bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM,umat &location_mat,
 }
 template bool import_Sparse_Matrix<uword>(std::string mfilename,SpMat<uword> &MM,umat &location_mat,Col<uword> &values);
 template bool import_Sparse_Matrix<double>(std::string mfilename,SpMat<double> &MM,umat &location_mat,Col<double> &values);
+
+
+template<typename T>
+bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM)
+{
+    arma::umat RCi(2,1);
+    T val;
+    std::ifstream matrix_file(mfilename);
+
+    arma::umat location_mat;
+    Col<T> values;
+    MM.reset();
+
+    // Read the file and build the Location Matrix and the Values vector
+    unsigned int i=0;
+    while (matrix_file >> RCi(0,0) >> RCi(1,0) >> val){
+        location_mat.insert_cols(i,RCi);
+        values.resize(i+1);
+        values(i)=val;
+        i++;
+    }
+
+    MM = SpMat<T>(location_mat,values);
+
+	return true;
+}
+template bool import_Sparse_Matrix<uword>(std::string mfilename,SpMat<uword> &MM);
+template bool import_Sparse_Matrix<double>(std::string mfilename,SpMat<double> &MM);
 
 
 

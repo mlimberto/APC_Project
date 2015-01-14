@@ -15,17 +15,15 @@ int main(int argc,char** argv)
     std::string matrixURM_filename("../dataset/Sampled_Dataset/urm_sampling.txt");
 
     sp_umat M;
-    umat location_matrix;
-    Col<uword> values;
 
-    import_Sparse_Matrix<uword>(matrixICM_filename,M,location_matrix,values);
+
+    import_Sparse_Matrix<uword>(matrixICM_filename,M);
 
     M.print();
 
     SpMat<double> urm;
-    Col<double> val;
 
-    import_Sparse_Matrix<double>(matrixURM_filename,urm,location_matrix,val);
+    import_Sparse_Matrix<double>(matrixURM_filename,urm);
 
     urm.print();
 
