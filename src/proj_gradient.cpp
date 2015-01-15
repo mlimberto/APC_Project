@@ -46,7 +46,7 @@ void AMF::solve_pg_U()
 
 		// Evaluate stop criterion
 		prec_obj = curr_obj;
-		curr_obj = evaluate_Obj_Function(URM_,U_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_);
+		curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_);
 
 		if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
 			stop_criterion = true;
@@ -77,7 +77,7 @@ void AMF::solve_pg_U_With_Log()
 
 		// Evaluate stop criterion
 		prec_obj = curr_obj;
-		curr_obj = evaluate_Obj_Function(URM_,U_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_);
+		curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_);
 
 		// if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
 		// 	stop_criterion = true;
@@ -113,13 +113,16 @@ void AMF::solve_pg_U_One_Iteration(mat &G,const mat &A)
 			// Parte lineare
 			double ll = 0 ;
 			for (uword k = 0 ; k < A.n_cols ; ++k)
-				ll += build_S(x,k,URM_,U_old_,H_old_, V_old_) * A(y,k);
+				ll += build_S(x,k,URM_Tr_,U_old_,H_old_, V_old_) * A(y,k);
 
 			// Aggiorna la matrice
 			G(x,y) = 2*qq - 2*ll ; // La parte legata all'overfitting viene aggiunta dopo
 
 			}
 		}
+
+
+
 
 	// Update U_ 
 	U_ = U_ - gradient_step_*G -2*gradient_step_*lambda_*U_ ;

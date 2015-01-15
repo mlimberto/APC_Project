@@ -31,7 +31,7 @@ sp_mat AMF::solve_V_One_Step_Gradient(const sp_mat &V_0){
     // Computation of the gradient of f=||S-UHV||^2
     std::cout<<"Solving One gradient Step : computing gradient"<<std::endl;
     mat UH = U_*H_;
-    mat grad=2*UH.t()*(UH*V_0-project_URM(URM_,U_old_*H_old_*V_old_));
+    mat grad=2*UH.t()*(UH*V_0-project_URM(URM_Tr_,U_old_*H_old_*V_old_));
 
     // Projection of the gradient on ICM
     std::cout<<"Solving One gradient Step : projecting on ICM"<<std::endl;
@@ -106,7 +106,7 @@ sp_mat AMF::solve_V_One_Step_Gradient2(const sp_mat &V_0){
     // Computation of the gradient of f=||S-UHV||^2
     std::cout<<"Solving One gradient Step2 : computing gradient"<<std::endl;
     mat UH = U_*H_;
-    mat grad=2*UH.t()*(UH*V_0-project_URM(URM_,U_old_*H_old_*V_old_));
+    mat grad=2*UH.t()*(UH*V_0-project_URM(URM_Tr_,U_old_*H_old_*V_old_));
 
     //When dimensions are too big, do it by column :
     //mat grad(V_old_.n_rows,V_old_.n_cols);

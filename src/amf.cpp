@@ -21,7 +21,7 @@ lambda_(0),n_max_iter_(100),toll_(0.001)
     
 }
 
-AMF::AMF(std::string URM_filename, std::string ICM_filename, std::string param_filename)
+AMF::AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string param_filename)
 {
 	std::cout << "Creating instance of AMF" << std::endl;
 
@@ -30,7 +30,7 @@ AMF::AMF(std::string URM_filename, std::string ICM_filename, std::string param_f
 		std::cout << "WARNING : Initialization of parameters from file didn't work properly" << std::endl;
 	}
 
-	if (!import_Sparse_Matrix<double>(URM_filename,URM_,URM_Location_Matrix_,URM_Values_))
+	if (!import_Sparse_Matrix<double>(URM_Tr_filename,URM_Tr_,URM_Tr_Location_Matrix_,URM_Tr_Values_))
 	{
 		std::cout << "WARNING : Initialization of URM matrix from file didn't work properly" << std::endl;
 	}
@@ -42,7 +42,7 @@ AMF::AMF(std::string URM_filename, std::string ICM_filename, std::string param_f
 
 	// INITIALIZE ALL THE OTHER STUFF
 
-	n_ = URM_.n_rows;
+	n_ = URM_Tr_.n_rows;
 	m_ = ICM_.n_cols;
 	k_ = ICM_.n_rows;
 
@@ -151,13 +151,13 @@ void AMF::initialize_matrices(){
 	// Initialize U 
     //std::cout<< "Initializing U_old..." << std::endl;
 
-	// U_old_ = 10*randu<mat>(n_,r_);
+	U_old_ = 10*randu<mat>(n_,r_);
     //U_old_ = mat(n_,r_,fill::ones);
 
 	// Initialize H
     //std::cout<< "Initializing H_old..." << std::endl;
 
-    //H_old_ = mat(r_,k_,fill::eye);
+    H_old_ = mat(r_,k_,fill::eye);
 
     // Initialize V
     std::cout <<"Initializing V_old..."<<std::endl;
@@ -200,17 +200,17 @@ void AMF::solve_With_Log()
 }
 
 
-mat AMF::project_URM_by_column(uword j,const mat &S){
+mat AMF::project_URM_Tr_by_column(uword j,const mat &S){
     mat m=S;
-    if (S.n_rows != URM_.n_rows){
-        std::cerr << "ERROR in project_URM_by_column : Inconsistent matrices !!!" << std::endl;
+    if (S.n_rows != URM_Tr_.n_rows){
+        std::cerr << "ERROR in project_URM_Tr_by_column : Inconsistent matrices !!!" << std::endl;
     }else if(S.n_cols != 1){
-        std::cerr << "ERROR in project_URM_by_column : You have to pass a column !!!" << std::endl;
+        std::cerr << "ERROR in project_URM_Tr_by_column : You have to pass a column !!!" << std::endl;
 
     }else{
-        uvec q1=get_Vector_Of_Indices(URM_Location_Matrix_);
-        uvec q2=find(q1>=URM_.n_rows*j && q1<URM_.n_rows*(j+1));
-        m.elem(q1(q2)-URM_.n_rows*j)=URM_Values_(q2);
+        uvec q1=get_Vector_Of_Indices(URM_Tr_Location_Matrix_);
+        uvec q2=find(q1>=URM_Tr_.n_rows*j && q1<URM_Tr_.n_rows*(j+1));
+        m.elem(q1(q2)-URM_Tr_.n_rows*j)=URM_Tr_Values_(q2);
 
 
     }

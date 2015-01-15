@@ -43,13 +43,13 @@ class AMF
 
     
         // Matrices and their coordinates
-        arma::sp_mat URM_;  // user-rating matrix, given in the dataset
+        arma::sp_mat URM_Tr_;  // user-rating matrix, given in the dataset
         arma::sp_umat ICM_; // item-content matrix, given in the dataset
 
-        arma::umat URM_Location_Matrix_;
+        arma::umat URM_Tr_Location_Matrix_;
         arma::umat ICM_Location_Matrix_;
 
-        arma::vec URM_Values_;
+        arma::vec URM_Tr_Values_;
         arma::uvec ICM_Values_;
 
         arma::sp_mat V_,V_old_ ; // Matrix V
@@ -80,7 +80,7 @@ class AMF
         arma::sp_mat solve_V_One_Step_Gradient(const arma::sp_mat &V_0);
         arma::sp_mat solve_V_One_Step_Gradient2(const arma::sp_mat &V_0);
         arma::sp_mat project_ICM(const arma::mat &G);
-        arma::mat project_URM_by_column(arma::uword j, const arma::mat &S);
+        arma::mat project_URM_Tr_by_column(arma::uword j, const arma::mat &S);
 
         void orthogonal_projection(arma::sp_mat &G);
     
@@ -95,7 +95,7 @@ public :
     
     AMF();
 
-    AMF(std::string URM_filename, std::string ICM_filename, std::string param_filename);
+    AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string param_filename);
 
     bool initialize_Parameters(std::string filename);
     
@@ -132,7 +132,7 @@ public :
 
 
     inline void print_ICM(){ICM_.print("ICM =");}
-    inline void print_URM(){URM_.print("URM =");}
+    inline void print_URM_Tr(){URM_Tr_.print("URM =");}
 
 };
 

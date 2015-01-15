@@ -9,7 +9,9 @@ using namespace arma;
 bool test_orthogonal_projection(){
 
 
-    AMF amf;
+    AMF amf("../APC_Project/dataset/Sampled_Dataset/urm_sampling.txt",
+        "../APC_Project/dataset/Sampled_Dataset/icm_sampling.txt",
+        "../APC_Project/tests/test_parameters.txt");
 
     //amf.initialize_Parameters("test_parameters.txt") ;
     amf.set_lambda(1.5);
@@ -29,15 +31,13 @@ bool test_orthogonal_projection(){
     cout << "gradient_step has been set to " << amf.get_gradient_step() << endl;
     cout << ( (amf.get_lambda()==1.5) ? "Succeed" : "Failed") << endl;
 
-    amf.initialize_URM_Locations("../APC_Project/dataset/Sampled_Dataset/urm_sampling.txt");
-    amf.initialize_ICM_Locations("../APC_Project/dataset/Sampled_Dataset/icm_sampling.txt");
-    cout<<"URM size = "<<amf.URM_.n_rows<<" x "<<amf.URM_.n_cols<<endl;
+    cout<<"URM size = "<<amf.URM_Tr_.n_rows<<" x "<<amf.URM_Tr_.n_cols<<endl;
     cout<<"ICM size = "<<amf.ICM_.n_rows<<" x "<<amf.ICM_.n_cols<<endl;
 
     //Inizialize matrices (randomly)
-    amf.U_=randu<mat>(amf.URM_.n_rows,amf.get_n_latent_factors());
+    amf.U_=randu<mat>(amf.URM_Tr_.n_rows,amf.get_n_latent_factors());
     amf.H_=randu<mat>(amf.get_n_latent_factors(),amf.ICM_.n_rows);
-    amf.U_old_=randu<mat>(amf.URM_.n_rows,amf.get_n_latent_factors());
+    amf.U_old_=randu<mat>(amf.URM_Tr_.n_rows,amf.get_n_latent_factors());
     //amf.U_old_ = mat(amf.URM_.n_rows,amf.get_n_latent_factors(),fill::ones);
     amf.H_old_=randu<mat>(amf.get_n_latent_factors(),amf.ICM_.n_rows);
     //amf.H_old_ = mat(amf.get_n_latent_factors(),amf.ICM_.n_rows,fill::eye);
@@ -47,13 +47,13 @@ bool test_orthogonal_projection(){
 
 
     cout<<"Evaluating object function ..."<<endl;
-    double before=evaluate_Obj_Function(amf.URM_,amf.U_,amf.H_,amf.V_old_,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_);
+    double before=evaluate_Obj_Function(amf.URM_Tr_,amf.U_,amf.H_,amf.V_old_,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_);
     cout<<" Object function before gradient = "<<before<<endl;
 
     sp_mat V_new1=amf.solve_V_One_Step_Gradient(amf.V_old_);
 
     cout<<"Evaluating object function ..."<<endl;
-    cout<<"Object function after gradient = "<<evaluate_Obj_Function(amf.URM_,amf.U_,amf.H_,V_new1,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_)<<endl;
+    cout<<"Object function after gradient = "<<evaluate_Obj_Function(amf.URM_Tr_,amf.U_,amf.H_,V_new1,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_)<<endl;
 
     cout<<"Checking constraints on V_new1..."<<endl;
     check_V_Constraint(V_new1,amf.ICM_);
@@ -61,7 +61,7 @@ bool test_orthogonal_projection(){
     sp_mat V_new2=amf.solve_V_One_Step_Gradient2(amf.V_old_);
 
     cout<<"Evaluating object function ..."<<endl;
-    cout<<"Object function after gradient = "<<evaluate_Obj_Function(amf.URM_,amf.U_,amf.H_,V_new2,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_)<<endl;
+    cout<<"Object function after gradient = "<<evaluate_Obj_Function(amf.URM_Tr_,amf.U_,amf.H_,V_new2,amf.U_old_,amf.H_old_,amf.V_old_,amf.lambda_)<<endl;
 
     cout<<"Checking constraints on V_new2..."<<endl;
     check_V_Constraint(V_new2,amf.ICM_);
