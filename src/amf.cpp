@@ -216,3 +216,12 @@ mat AMF::project_URM_Tr_by_column(uword j,const mat &S){
     }
     return m;
 }
+
+umat AMF::get_TopN_Recommendation(arma::uword N)
+{
+	umat REC(n_,N,fill::zeros); // Initialize recommendation matrix
+
+
+
+	return REC;
+}

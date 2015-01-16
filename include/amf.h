@@ -44,11 +44,15 @@ class AMF
     
         // Matrices and their coordinates
         arma::sp_mat URM_Tr_;  // user-rating matrix, given in the dataset
+        arma::sp_mat URM_Val_;
         arma::sp_umat ICM_; // item-content matrix, given in the dataset
 
+
         arma::umat URM_Tr_Location_Matrix_;
+        arma::umat URM_Val_Location_Matrix_;
         arma::umat ICM_Location_Matrix_;
 
+        arma::vec URM_Val_Values_;
         arma::vec URM_Tr_Values_;
         arma::uvec ICM_Values_;
 
@@ -104,6 +108,10 @@ public :
     void solve();
     
     void solve_With_Log();
+
+    // RECOMMENDATIONS
+
+    arma::umat get_TopN_Recommendation(arma::uword N);
 
 
     // SET METHODS
