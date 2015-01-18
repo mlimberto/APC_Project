@@ -157,7 +157,8 @@ void AMF::initialize_matrices(){
 	// Initialize H
     //std::cout<< "Initializing H_old..." << std::endl;
 
-    H_old_ = mat(r_,k_,fill::eye);
+    H_old_ = eye<mat>(r_,k_);
+    // H_old_ = mat(r_,k_,fill::eye);
 
     // Initialize V
     std::cout <<"Initializing V_old..."<<std::endl;
@@ -217,10 +218,38 @@ mat AMF::project_URM_Tr_by_column(uword j,const mat &S){
     return m;
 }
 
-umat AMF::get_TopN_Recommendation(arma::uword N)
+umat AMF::get_TopN_Recommendation(uword N)
 {
-	umat REC(n_,N,fill::zeros); // Initialize recommendation matrix
+	umat REC = zeros<umat>(n_,N); // Initialize recommendation matrix
 
+	for (uword i=0 ; i < n_ ; i++)
+	{
+		// for every row of URM_Tr set a row vecor v in which we fill the zeros
+		// of URM_Tr with the predictions. If URM_Tr is different from zero,
+		// we set v to 0, so we don't consider the evaluations already done
+		// from a user
+
+		rowvec v = zeros<rowvec>(m_);
+		for (uword j = 0 ; j < m_ ; j++)
+		{
+			if (URM_Tr_(i,j) == 0 )
+			{
+				v(j) = as_scalar(U_.row(i)*H_*V_.col(j));
+			}
+		}
+
+		// now we create the rowvector of indexes sorted in a decreasing order
+
+		urowvec indexes = stable_sort_index(v,"descent");
+
+		// now we keep only the N best recommendations
+
+		indexes.resize(1,N);
+
+		// finally we fill the REC matrix with the N best sorted indexes
+
+		REC.row(i) = indexes;
+	}
 
 
 	return REC;
