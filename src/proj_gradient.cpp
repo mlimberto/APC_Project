@@ -172,14 +172,12 @@ void AMF::solve_pg_H(){
 
 void AMF::solve_pg_H_With_Log(){
 
-    std::ofstream logfile;
-    logfile.open("log_pg_h.txt");
+    std::ofstream logfile("log_pg_h.txt");
 
     // Initialize H (check what is best)
     H_ = H_old_;
 
-    mat G(U_.n_rows,U_.n_cols,fill::zeros);
-    mat A = H_old_*V_old_;
+    mat G(H_.n_rows,H_.n_cols,fill::zeros);
 
     bool stop_criterion = false;
 
@@ -187,6 +185,7 @@ void AMF::solve_pg_H_With_Log(){
 
     for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n )
     {
+
         solve_pg_H_One_Iteration(G);
 
         // Evaluate stop criterion
@@ -197,7 +196,7 @@ void AMF::solve_pg_H_With_Log(){
         // 	stop_criterion = true;
 
         // Save information on logfile
-        logfile << curr_obj << "\n";
+        logfile << curr_obj << std::endl;
 
         // Print information
         std::cout << "Iteration " << n+1 << " : Objective function = " << curr_obj << std::endl;
@@ -205,7 +204,7 @@ void AMF::solve_pg_H_With_Log(){
     }
 
     #ifndef NDEBUG
-    H_.print("H matrix");
+    //H_.print("H matrix");
     #endif
 
     logfile.close();
@@ -216,17 +215,16 @@ void AMF::solve_pg_H_One_Iteration(mat &G){
     // Compute the gradient
     for (uword alpha =0 ; alpha< H_.n_rows ; ++alpha){
         for (uword beta = 0 ; beta < H_.n_cols ; ++beta){
-
             vec q(U_.n_rows,fill::zeros);
-
-            for(uword i=0; i<q.n_elem; ++i)
-                for(uword j=0; j<V_.n_cols; ++j)
-                    q(i)=q(i)+(U_.row(i)*H_*V_old_.col(j)-build_S(i,j,URM_Tr_,U_old_,H_old_, V_old_))*V_old_(beta,j);
-
-            G(alpha,beta)=2*dot(U_.col(alpha),q)+2*lambda_*H_;
-
+            for(uword i=0; i<q.n_elem; ++i){
+                for(uword j=0; j<V_.n_cols; ++j){
+                    q(i)=q(i)+as_scalar((U_.row(i)*H_*V_old_.col(j)-build_S(i,j,URM_Tr_,U_old_,H_old_, V_old_))*V_old_(beta,j));
+                }
             }
+            G(alpha,beta)=2*dot(U_.col(alpha),q)+2*lambda_*H_(alpha,beta);
+
         }
+    }
 
 
     // Update H_

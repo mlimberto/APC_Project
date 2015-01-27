@@ -76,7 +76,7 @@ class AMF
 
         void solve_pg_H_With_Log();
 
-        void solve_pg_H_One_Iteration(arma::mat &G, arma::mat &A);
+        void solve_pg_H_One_Iteration(arma::mat &G);
 
 
         void solve_V();
@@ -91,6 +91,7 @@ class AMF
 public :
 
     friend bool test_PG_U(AMF & amf); // For testing purposes
+    friend bool test_PG_H(AMF & amf );
     friend bool test_orthogonal_projection();
     friend bool test_project_ICM();
     friend bool test_check_method2();
