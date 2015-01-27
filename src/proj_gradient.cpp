@@ -132,17 +132,106 @@ void AMF::solve_pg_U_One_Iteration(mat &G,const mat &A)
 
 }
 
-void AMF::solve_pg_H()
-{
+void AMF::solve_pg_H(){
+    #ifndef NDEBUG
+    std::cout << "Solving projected gradient for H " << std::endl;
+    #endif
 
+    // Initialize U (check what is best)
+    H_ = H_old_;
+
+    // Allocate and compute the temporary matrix A := H*V
+    // and the gradient matrix G
+    mat G(H_.n_rows,H_.n_cols,fill::zeros);
+
+    // Run the loop
+
+    bool stop_criterion = false;
+
+    double prec_obj(0) , curr_obj(0);
+
+    for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n )
+    {
+        // #ifndef NDEBUG
+        // std::cout <<"Gradient method for H, iteration " << n << std::endl;
+        // #endif
+
+
+        // Perform the gradient step
+        solve_pg_H_One_Iteration(G);
+
+        // Evaluate stop criterion
+        prec_obj = curr_obj;
+        curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
+
+        if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
+            stop_criterion = true;
+
+    }
 }
 
-void AMF::solve_pg_H_With_Log()
-{
+void AMF::solve_pg_H_With_Log(){
 
+    std::ofstream logfile;
+    logfile.open("log_pg_h.txt");
+
+    // Initialize H (check what is best)
+    H_ = H_old_;
+
+    mat G(U_.n_rows,U_.n_cols,fill::zeros);
+    mat A = H_old_*V_old_;
+
+    bool stop_criterion = false;
+
+    double prec_obj(0) , curr_obj(0);
+
+    for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n )
+    {
+        solve_pg_H_One_Iteration(G);
+
+        // Evaluate stop criterion
+        prec_obj = curr_obj;
+        curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
+
+        // if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
+        // 	stop_criterion = true;
+
+        // Save information on logfile
+        logfile << curr_obj << "\n";
+
+        // Print information
+        std::cout << "Iteration " << n+1 << " : Objective function = " << curr_obj << std::endl;
+
+    }
+
+    #ifndef NDEBUG
+    H_.print("H matrix");
+    #endif
+
+    logfile.close();
 }
 
-void AMF::solve_pg_H_One_Iteration(mat &G,mat &A)
-{
+void AMF::solve_pg_H_One_Iteration(mat &G){
 
+    // Compute the gradient
+    for (uword alpha =0 ; alpha< H_.n_rows ; ++alpha){
+        for (uword beta = 0 ; beta < H_.n_cols ; ++beta){
+
+            vec q(U_.n_rows,fill::zeros);
+
+            for(uword i=0; i<q.n_elem; ++i)
+                for(uword j=0; j<V_.n_cols; ++j)
+                    q(i)=q(i)+(U_.row(i)*H_*V_old_.col(j)-build_S(i,j,URM_Tr_,U_old_,H_old_, V_old_))*V_old_(beta,j);
+
+            G(alpha,beta)=2*dot(U_.col(alpha),q)+2*lambda_*H_;
+
+            }
+        }
+
+
+    // Update H_
+    H_ = H_ - gradient_step_*G;
+
+    // Projection step
+    get_Positive_Matrix(H_);
 }
