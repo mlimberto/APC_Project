@@ -148,6 +148,10 @@ bool AMF::initialize_Parameters(std::string filename)
 
 void AMF::initialize_matrices(){
 
+	#ifndef NDEBUG
+	std::cout << "Initializing matrices U,H,V ... " << std::endl;
+	#endif
+
 	// Initialize U 
     //std::cout<< "Initializing U_old..." << std::endl;
 

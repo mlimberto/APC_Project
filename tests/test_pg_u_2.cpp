@@ -1,3 +1,5 @@
+/* TEST PG_U_2 */
+
 #include <iostream>
 #include <fstream>
 
@@ -17,10 +19,20 @@ bool test_PG_U(AMF & amf )
 	amf.H_old_(2,1) = 1.0;
 	amf.H_old_(0,2) = 1.0;
 
-	amf.V_old_.eye(3,5);
-	amf.V_old_(2,3) = 0.5;
-	amf.V_old_(0,3) = 0.5;
-	amf.V_old_(1,4) = 1,0;
+	sp_mat V_old(3,5);
+	V_old(0,0) = V_old(1,1) = V_old(2,2) = V_old(1,4) = 1.0; 
+	V_old(2,3) = 0.5;
+	V_old(0,3) = 0.5;	
+
+	amf.V_old_ = V_old;
+
+	// amf.V_old_.eye(3,5);
+	// amf.V_old_(2,3) = 0.5;
+	// amf.V_old_(0,3) = 0.5;
+	// amf.V_old_(1,4) = 1.0;
+
+	amf.H_old_.print("H matrix");
+	amf.V_old_.print("V matrix");
 
 
 	(amf.H_old_ * amf.V_old_).print("A matrix");
@@ -29,12 +41,13 @@ bool test_PG_U(AMF & amf )
 
 	sp_mat URM(5,5);
 	URM(0,0) = URM(1,1) = URM(2,2) = URM(3,3) = URM(4,4) =3.0; 
-	URM(1,1) = 4.0;
+	URM(2,4) = 1.0;
+	URM(0,1) = 4.0;
 	URM(3,2) = 2.0;
 
 	URM.print("URM Matrix");
 
-	amf.URM_ = URM;
+	amf.URM_Tr_ = URM;
 
 	// Initialize U_old
 
