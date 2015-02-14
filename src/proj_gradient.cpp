@@ -14,7 +14,7 @@ using namespace arma;
 //////////////////////////
 
 
-void AMF::solve_pg_U()
+void AMF::solve_pg_U() // STILL WORK IN PROGRESS!!!!
 {
 	#ifndef NDEBUG
 	std::cout << "Solving projected gradient for U " << std::endl;
@@ -24,9 +24,13 @@ void AMF::solve_pg_U()
 	U_ = U_old_;
 
 	// Allocate and compute the temporary matrix A := H*V
+
+	mat A = H_old_*V_old_; 
+
 	// and the gradient matrix G
 	mat G(U_.n_rows,U_.n_cols,fill::zeros);
-	mat A = H_old_*V_old_; // This matrix shall be computed only once and stored
+
+
 
 	// Run the loop
 
@@ -42,7 +46,7 @@ void AMF::solve_pg_U()
 
 
 		// Perform the gradient step 
-		solve_pg_U_One_Iteration(G,A);
+		// solve_pg_U_One_Iteration(G,A);
 
 		// Evaluate stop criterion
 		prec_obj = curr_obj;
@@ -61,11 +65,28 @@ void AMF::solve_pg_U_With_Log()
 	std::ofstream logfile;
 	logfile.open("log_pg_u.txt");
 
-	// Initialize U (check what is best)
+	// Initialize U (with "warm-up")
 	U_ = U_old_;
 
-	mat G(U_.n_rows,U_.n_cols,fill::zeros);
 	mat A = H_old_*V_old_;
+	mat AAt = A*(A.t() );
+
+	mat G(U_.n_rows,U_.n_cols,fill::zeros);
+
+	// Compute the linear part of the gradient
+	for (uword x =0 ; x< U_.n_rows ; ++x)
+		for (uword y = 0 ; y < U_.n_cols ; ++y)
+		{				
+			double ll = 0 ;
+
+			for (uword k = 0 ; k < A.n_cols ; ++k)
+				ll += build_S(x,k,URM_Tr_,U_old_,H_old_, V_old_) * A(y,k);
+
+			G(x,y) = - 2*ll ; 
+		}
+
+
+
 
 	bool stop_criterion = false;
 
@@ -73,7 +94,7 @@ void AMF::solve_pg_U_With_Log()
 
 	for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n ) 
 	{
-		solve_pg_U_One_Iteration(G,A);
+		solve_pg_U_One_Iteration(G,A,AAt);
 
 		// Evaluate stop criterion
 		prec_obj = curr_obj;
@@ -97,31 +118,38 @@ void AMF::solve_pg_U_With_Log()
 	logfile.close();
 }
 
-void AMF::solve_pg_U_One_Iteration(mat &G,const mat &A)
+void AMF::solve_pg_U_One_Iteration(mat G,const mat &A, const arma::mat &AAt)
 {
-	// Compute the gradient
-	for (uword x =0 ; x< U_.n_rows ; ++x)
-	{
-		for (uword y = 0 ; y < U_.n_cols ; ++y)
-		{
-			// Parte quadratica
-			double qq = 0;
-			for (uword k = 0 ; k < U_.n_cols ; ++k)
-				for(uword j = 0 ; j < U_.n_cols ; ++j)
-					qq += U_(x,k)*A(k,j)*A(y,j);
-				
-			// Parte lineare
-			double ll = 0 ;
-			for (uword k = 0 ; k < A.n_cols ; ++k)
-				ll += build_S(x,k,URM_Tr_,U_old_,H_old_, V_old_) * A(y,k);
+	// Update quadratic part of the gradient
 
-			// Aggiorna la matrice
-			G(x,y) = 2*qq - 2*ll ; // La parte legata all'overfitting viene aggiunta dopo
+	// for (uword x =0 ; x< U_.n_rows ; ++x)
+	// {
+	// 	for (uword y = 0 ; y < U_.n_cols ; ++y)
+	// 	{
+	// 		// Parte quadratica
+	// 		double qq = 0;
+	// 		for (uword k = 0 ; k < U_.n_cols ; ++k)
+	// 			for(uword j = 0 ; j < U_.n_cols ; ++j)
+	// 				qq += U_(x,k)*A(k,j)*A(y,j);
 
-			}
-		}
+	// 		// std::cout <<"qq1 = " <<  qq << std::endl;
+
+	// 		double newqq = 0;
+	// 		for (uword k = 0 ; k < U_.n_cols ; ++k)
+	// 			newqq += U_(x,k)*AAt(k,y);
+
+	// 		// std::cout << "qq2 = " << newqq << std::endl; 
 
 
+	// 		// Aggiorna la matrice aggiungendo la parte quadratica
+	// 		// G(x,y) += 2*qq  ; 
+
+	// 	}
+	// }
+
+	G += 2*U_*AAt;
+
+	G.print("Gradient of U");
 
 
 	// Update U_ 
