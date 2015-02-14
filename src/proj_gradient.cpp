@@ -85,7 +85,9 @@ void AMF::solve_pg_U_With_Log()
 			G(x,y) = - 2*ll ; 
 		}
 
-
+	#ifndef NDEBUG
+	G.print("Linear part of G");
+	#endif
 
 
 	bool stop_criterion = false;

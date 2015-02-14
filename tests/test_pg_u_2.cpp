@@ -16,20 +16,12 @@ bool test_PG_U(AMF & amf )
 	// Set H,V
 
 	amf.H_old_.eye(3,3);
-	amf.H_old_(2,1) = 1.0;
-	amf.H_old_(0,2) = 1.0;
+	amf.H_old_ = amf.H_old_*0.5;
 
-	sp_mat V_old(3,5);
-	V_old(0,0) = V_old(1,1) = V_old(2,2) = V_old(1,4) = 1.0; 
-	V_old(2,3) = 0.5;
-	V_old(0,3) = 0.5;	
+	sp_mat V_old(3,3);
+	V_old(0,0) = V_old(1,1) = V_old(2,2) = 1.0; 
 
 	amf.V_old_ = V_old;
-
-	// amf.V_old_.eye(3,5);
-	// amf.V_old_(2,3) = 0.5;
-	// amf.V_old_(0,3) = 0.5;
-	// amf.V_old_(1,4) = 1.0;
 
 	amf.H_old_.print("H matrix");
 	amf.V_old_.print("V matrix");
@@ -39,11 +31,17 @@ bool test_PG_U(AMF & amf )
 
 	// Set URM
 
-	sp_mat URM(5,5);
-	URM(0,0) = URM(1,1) = URM(2,2) = URM(3,3) = URM(4,4) =3.0; 
-	URM(2,4) = 1.0;
-	URM(0,1) = 4.0;
-	URM(3,2) = 2.0;
+	sp_mat URM(3,3);
+	URM(0,0) = 0.5 ; 
+	URM(0,1) = 0.5; 
+	URM(0,2) = 1.0; 
+	URM(1,0) = 1.0;
+	URM(1,1) = 2.0; 
+	URM(1,2) = 1.0; 
+	URM(2,0) = 5; 
+	URM(2,1) = 3.0;
+	URM(2,2) = 2.0; 
+
 
 	URM.print("URM Matrix");
 
@@ -51,7 +49,7 @@ bool test_PG_U(AMF & amf )
 
 	// Initialize U_old
 
-	amf.U_old_.randu(5,3);
+	amf.U_old_.randu(3,3);
 	amf.U_old_ = amf.U_old_*10.0;
 
 	amf.U_old_.print("U_old matrix");
@@ -65,12 +63,76 @@ bool test_PG_U(AMF & amf )
 
 	amf.U_.print("U matrix");
 
+	(URM - amf.U_).print("S - UHV");
+
 	cout << "Lambda = " << amf.lambda_ << endl;
 
 	cout << "End of the test function" << endl;
 
 	return true;
 }
+
+// bool test_PG_U_backup(AMF & amf )
+// {
+// 	// Set H,V
+
+// 	amf.H_old_.eye(3,3);
+// 	amf.H_old_(2,1) = 1.0;
+// 	amf.H_old_(0,2) = 1.0;
+
+// 	sp_mat V_old(3,5);
+// 	V_old(0,0) = V_old(1,1) = V_old(2,2) = V_old(1,4) = 1.0; 
+// 	V_old(2,3) = 0.5;
+// 	V_old(0,3) = 0.5;	
+
+// 	amf.V_old_ = V_old;
+
+// 	// amf.V_old_.eye(3,5);
+// 	// amf.V_old_(2,3) = 0.5;
+// 	// amf.V_old_(0,3) = 0.5;
+// 	// amf.V_old_(1,4) = 1.0;
+
+// 	amf.H_old_.print("H matrix");
+// 	amf.V_old_.print("V matrix");
+
+
+// 	(amf.H_old_ * amf.V_old_).print("A matrix");
+
+// 	// Set URM
+
+// 	sp_mat URM(5,5);
+// 	URM(0,0) = URM(1,1) = URM(2,2) = URM(3,3) = URM(4,4) =3.0; 
+// 	URM(2,4) = 1.0;
+// 	URM(0,1) = 4.0;
+// 	URM(3,2) = 2.0;
+
+// 	URM.print("URM Matrix");
+
+// 	amf.URM_Tr_ = URM;
+
+// 	// Initialize U_old
+
+// 	amf.U_old_.randu(5,3);
+// 	amf.U_old_ = amf.U_old_*10.0;
+
+// 	amf.U_old_.print("U_old matrix");
+
+// 	// Set toll gradient
+// 	amf.toll_gradient_ = 1e-5;
+
+// 	// Run the test
+
+// 	amf.solve_pg_U_With_Log();
+
+// 	amf.U_.print("U matrix");
+
+// 	cout << "Lambda = " << amf.lambda_ << endl;
+
+// 	cout << "End of the test function" << endl;
+
+// 	return true;
+// }
+
 
 int main(int argc,char** argv)
 {
