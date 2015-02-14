@@ -82,7 +82,7 @@ void AMF::solve_pg_U_With_Log()
 			for (uword k = 0 ; k < A.n_cols ; ++k)
 				ll += build_S(x,k,URM_Tr_,U_old_,H_old_, V_old_) * A(y,k);
 
-			G(x,y) = - 2*ll ; 
+			G(x,y) = - ll ; 
 		}
 
 	#ifndef NDEBUG
@@ -149,13 +149,22 @@ void AMF::solve_pg_U_One_Iteration(mat G,const mat &A, const arma::mat &AAt)
 	// 	}
 	// }
 
-	G += 2*U_*AAt;
+	G += U_*AAt;
 
-	G.print("Gradient of U");
+	// Find a feasible step
+	// double sigma = 0.01;
+	// double beta = 0.1;
+	// double current_step = 1;
+	// bool is_feasible = false;
+
+	// while(!is_feasible)
+	// {
+	// 	mat D = - current_step_*G -2*current_step_*lambda_*U_ ;
+	// }
 
 
 	// Update U_ 
-	U_ = U_ - gradient_step_*G -2*gradient_step_*lambda_*U_ ;
+	U_ = U_ - gradient_step_*G - gradient_step_*lambda_*U_ ;
 
 	// Projection step
 	get_Positive_Matrix(U_);
