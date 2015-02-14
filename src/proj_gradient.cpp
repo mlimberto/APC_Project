@@ -123,51 +123,38 @@ void AMF::solve_pg_U_With_Log()
 void AMF::solve_pg_U_One_Iteration(mat G,const mat &A, const arma::mat &AAt)
 {
 	// Update quadratic part of the gradient
-
-	// for (uword x =0 ; x< U_.n_rows ; ++x)
-	// {
-	// 	for (uword y = 0 ; y < U_.n_cols ; ++y)
-	// 	{
-	// 		// Parte quadratica
-	// 		double qq = 0;
-	// 		for (uword k = 0 ; k < U_.n_cols ; ++k)
-	// 			for(uword j = 0 ; j < U_.n_cols ; ++j)
-	// 				qq += U_(x,k)*A(k,j)*A(y,j);
-
-	// 		// std::cout <<"qq1 = " <<  qq << std::endl;
-
-	// 		double newqq = 0;
-	// 		for (uword k = 0 ; k < U_.n_cols ; ++k)
-	// 			newqq += U_(x,k)*AAt(k,y);
-
-	// 		// std::cout << "qq2 = " << newqq << std::endl; 
-
-
-	// 		// Aggiorna la matrice aggiungendo la parte quadratica
-	// 		// G(x,y) += 2*qq  ; 
-
-	// 	}
-	// }
-
 	G += U_*AAt;
 
 	// Find a feasible step
-	// double sigma = 0.01;
-	// double beta = 0.1;
-	// double current_step = 1;
-	// bool is_feasible = false;
+	double sigma = 0.01;
+	double beta = 0.1;
+	double current_step = 100;
+	bool is_feasible = false;
 
-	// while(!is_feasible)
-	// {
-	// 	mat D = - current_step_*G -2*current_step_*lambda_*U_ ;
-	// }
+	while(!is_feasible)
+	{
+		mat U_cand = U_ - current_step*G -current_step*lambda_*U_ ;
+		get_Positive_Matrix(U_cand);
+		mat D = U_cand - U_ ;
 
+		double res = (1-sigma)*dot(G,D) + 
+					0.5*dot(D , D *(AAt + lambda_*eye(G.n_cols,G.n_cols) )) ;
+
+		std::cout << "Step = " << current_step << " Value = " << res << " ";
+		std::cout <<( (res <= 0)?("Feasible"):("Not feasible") )<< std::endl;
+
+		if (res <=0)
+			is_feasible = true;
+		else 
+			current_step = beta*current_step;
+	}
+
+	std::cout << "Selected step is " << current_step << std::endl;
 
 	// Update U_ 
-	U_ = U_ - gradient_step_*G - gradient_step_*lambda_*U_ ;
-
-	// Projection step
+	U_ = U_ - current_step*G -current_step*lambda_*U_ ;
 	get_Positive_Matrix(U_);
+
 
 }
 
