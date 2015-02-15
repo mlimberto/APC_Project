@@ -201,6 +201,8 @@ void AMF::solve_With_Log()
 
 	for (int i=0 ; i<n_max_iter_ ; ++i)
 	{
+		std::cout << "Iteration " << i+1 << std::endl;
+
 		std::cout << "SOLVING FOR U ..." << std::endl;
 		solve_pg_U_With_Log();
 

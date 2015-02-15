@@ -139,7 +139,7 @@ void AMF::solve_pg_U_One_Iteration(mat G,const mat &A, const arma::mat &AAt)
 				0.5*dot(D , D *(AAt + lambda_*eye(G.n_cols,G.n_cols) )) ;
 
 	std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
-	std::cout <<( (res <= 0)?("First is feasible"):("First is not feasible") )<< std::endl;
+	std::cout <<( (res <= 0)?("First is feasible so I increase the step"):("First is not feasible") )<< std::endl;
 
 	if (res <=0)
 	{
@@ -226,8 +226,8 @@ void AMF::solve_pg_H_With_Log(){
 
     mat UtU = (U_.t())*U_;
 
-    std::cout << "Computing VVt ..." << std::endl;
 
+    std::cout << "Computing VVt ..." << std::endl;
 
     mat VVt(V_old_.n_rows,V_old_.n_rows,fill::zeros);
 	for (uword i = 0 ; i < V_old_.n_rows ; ++i )
@@ -237,6 +237,8 @@ void AMF::solve_pg_H_With_Log(){
 				VVt(i,j) += V_old_(i,k)*V_old_(j,k);
 		}
 
+	// Initialize gradient step
+	gradient_step_ = 1.0;
 
     // Precompute linear part of the gradient
     mat G(H_.n_rows,H_.n_cols,fill::zeros);
@@ -294,13 +296,32 @@ void AMF::solve_pg_H_One_Iteration(mat G,const mat &UtU, const mat &VVt){
 	// Find a feasible step
 	double sigma = 0.01;
 	double beta = 0.1;
-	double current_step = 1;
 	bool is_feasible = false;
 
+	// Make a first try...
+
+	mat H_cand = H_ - gradient_step_*G ;
+	get_Positive_Matrix(H_cand);
+	mat D = H_cand - H_ ;
+
+	double hessian_part = dot(D,UtU*D*(VVt.t())) + lambda_*dot(D,D) ;
+	hessian_part = 0.5*hessian_part;
+
+	double res = (1-sigma)*dot(G,D) + hessian_part ;
+
+	std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
+	std::cout <<( (res <= 0)?("First is feasible so I increase the step"):("Fist is not feasible") )<< std::endl;
+
+	if (res <=0)
+		gradient_step_ = gradient_step_/beta;	
+	else 
+		gradient_step_ = beta*gradient_step_;
+
+	// Let's keep on trying ...
 
 	while(!is_feasible)
 	{
-		mat H_cand = H_ - current_step*G ;
+		mat H_cand = H_ - gradient_step_*G ;
 		get_Positive_Matrix(H_cand);
 		mat D = H_cand - H_ ;
 
@@ -309,19 +330,19 @@ void AMF::solve_pg_H_One_Iteration(mat G,const mat &UtU, const mat &VVt){
 
 		double res = (1-sigma)*dot(G,D) + hessian_part ;
 
-		std::cout << "Step = " << current_step << " Value = " << res << " ";
+		std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
 		std::cout <<( (res <= 0)?("Feasible"):("Not feasible") )<< std::endl;
 
 		if (res <=0)
 			is_feasible = true;
 		else 
-			current_step = beta*current_step;
+			gradient_step_ = beta*gradient_step_;
 	}
 
-	std::cout << "Selected step is " << current_step << std::endl;
+	std::cout << "Selected step is " << gradient_step_ << std::endl;
 
     // Update H_
-    H_ = H_ - current_step*G;
+    H_ = H_ - gradient_step_*G;
     get_Positive_Matrix(H_);
 
 }
