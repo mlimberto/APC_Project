@@ -200,7 +200,7 @@ void AMF::solve_pg_H(){
 
 
         // Perform the gradient step
-        solve_pg_H_One_Iteration(G);
+        // solve_pg_H_One_Iteration(G);
 
         // Evaluate stop criterion
         prec_obj = curr_obj;
@@ -220,7 +220,37 @@ void AMF::solve_pg_H_With_Log(){
     // Initialize H (with warm up)
     H_ = H_old_;
 
+    // Precompute UtU and VVt
+    mat UtU = (U_.t())*U_;
+
+    U_.print("U matrix");
+    UtU.print("UtU matrix");
+
+    mat VVt(V_old_.n_rows,V_old_.n_rows,fill::zeros);
+	for (uword i = 0 ; i < V_old_.n_rows ; ++i )
+		for (uword j = 0 ; j < V_old_.n_rows ; ++j )
+		{
+			for (uword k = 0 ; k < V_old_.n_cols ; ++k )
+				VVt(i,j) += V_old_(i,k)*V_old_(j,k);
+		}
+
+
+    // Precompute linear part of the gradient
     mat G(H_.n_rows,H_.n_cols,fill::zeros);
+
+    // for (uword alpha =0 ; alpha< H_.n_rows ; ++alpha){
+    //     for (uword beta = 0 ; beta < H_.n_cols ; ++beta){
+    //         vec q(U_.n_rows,fill::zeros);
+    //         for(uword i=0; i<q.n_elem; ++i){
+    //             for(uword j=0; j<V_.n_cols; ++j){
+    //                 q(i)=q(i)+as_scalar(-build_S(i,j,URM_Tr_,U_old_,H_old_, V_old_)*V_old_(beta,j));
+    //             }
+    //         }
+    //         // G(alpha,beta)=2*dot(U_.col(alpha),q)+2*lambda_*H_(alpha,beta);
+    //         G(alpha,beta)=dot(U_.col(alpha),q) ;
+
+    //     }
+    // }
 
     bool stop_criterion = false;
 
@@ -229,14 +259,14 @@ void AMF::solve_pg_H_With_Log(){
     for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n )
     {
 
-        solve_pg_H_One_Iteration(G);
+        solve_pg_H_One_Iteration(G,UtU,VVt);
 
         // Evaluate stop criterion
         prec_obj = curr_obj;
         curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
 
         if (abs(prec_obj - curr_obj)/curr_obj < toll_gradient_)
-        	stop_criterion = true;
+        	stop_criterion = false; // RISISTEMA!!!
 
         // Save information on logfile
         logfile << curr_obj << std::endl;
@@ -247,16 +277,13 @@ void AMF::solve_pg_H_With_Log(){
 
     }
 
-    #ifndef NDEBUG
-    //H_.print("H matrix");
-    #endif
 
     logfile.close();
 }
 
-void AMF::solve_pg_H_One_Iteration(mat &G){
+void AMF::solve_pg_H_One_Iteration(mat G,const mat &UtU, const mat &VVt){
 
-    // Compute the gradient
+    // Compute quadratic part of the gradient
     for (uword alpha =0 ; alpha< H_.n_rows ; ++alpha){
         for (uword beta = 0 ; beta < H_.n_cols ; ++beta){
             vec q(U_.n_rows,fill::zeros);
@@ -266,10 +293,13 @@ void AMF::solve_pg_H_One_Iteration(mat &G){
                 }
             }
             // G(alpha,beta)=2*dot(U_.col(alpha),q)+2*lambda_*H_(alpha,beta);
-            G(alpha,beta)=dot(U_.col(alpha),q)+lambda_*H_(alpha,beta);
+            G(alpha,beta)=dot(U_.col(alpha),q);
 
         }
     }
+
+    G = G+ lambda_*H_;
+    // G += UtU*H_*VVt + lambda_*H_;
 
 	// Find a feasible step
 	double sigma = 0.01;
@@ -277,15 +307,6 @@ void AMF::solve_pg_H_One_Iteration(mat &G){
 	double current_step = 1;
 	bool is_feasible = false;
 
-	mat A = (U_.t())*U_;
-
-	mat B(V_old_.n_rows,V_old_.n_rows,fill::zeros);
-	for (uword i = 0 ; i < V_old_.n_rows ; ++i )
-		for (uword j = 0 ; j < V_old_.n_rows ; ++j )
-		{
-			for (uword k = 0 ; k < V_old_.n_cols ; ++k )
-				B(i,j) += V_old_(i,k)*V_old_(j,k);
-		}
 
 	while(!is_feasible)
 	{
@@ -293,7 +314,7 @@ void AMF::solve_pg_H_One_Iteration(mat &G){
 		get_Positive_Matrix(H_cand);
 		mat D = H_cand - H_ ;
 
-		double hessian_part = dot(D,A*D*(B.t())) + lambda_*dot(D,D) ;
+		double hessian_part = dot(D,UtU*D*(VVt.t())) + lambda_*dot(D,D) ;
 		hessian_part = 0.5*hessian_part;
 
 		double res = (1-sigma)*dot(G,D) + hessian_part ;

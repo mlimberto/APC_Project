@@ -17,10 +17,13 @@ bool test_PG_H(AMF & amf )
     amf.H_old_(2,1) = 1.0;
     amf.H_old_(0,2) = 1.0;
 
-    amf.V_old_.eye(3,5);
-    amf.V_old_(2,3) = 0.5;
-    amf.V_old_(0,3) = 0.5;
-    amf.V_old_(1,4) = 1.0;
+    sp_mat V(3,5);
+    V(0,0) = V(1,1) = V(2,2) = 1.0;
+    V(2,3) = 0.5;
+    V(0,3) = 0.5;
+    V(1,4) = 1.0;
+
+    swap(V,amf.V_old_);
 
     amf.U_old_.eye(5,3);
     amf.U_old_ = amf.U_old_*10.0;
@@ -45,6 +48,8 @@ bool test_PG_H(AMF & amf )
     amf.U_ = amf.U_*10.0;
 
     amf.U_.print("U_ matrix");
+
+    amf.V_old_.print("V matrix");
 
 
     // Run the test
@@ -71,13 +76,13 @@ int main(int argc,char** argv)
     //    "../APC_Project/tests/test_parameters.txt");
 
     //amf.initialize_Parameters("test_parameters.txt") ;
-    amf.set_lambda(1.5);
+    amf.set_lambda(2.5);
     amf.set_n_max_iter(10000);
     amf.set_toll(1e-3);
     amf.set_n_latent_factors(50);
-    amf.set_n_max_iter_gradient(100);
+    amf.set_n_max_iter_gradient(800);
     amf.set_toll_gradient(1e-5);
-    amf.set_gradient_step(1e-5);
+    amf.set_gradient_step(1e-3);
 
     test_PG_H(amf);
     cout << ((test_PG_H(amf))? "Success " : "Failed" ) << endl;

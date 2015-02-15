@@ -155,13 +155,13 @@ void AMF::initialize_matrices(){
 	// Initialize U 
     //std::cout<< "Initializing U_old..." << std::endl;
 
-	U_old_ = 10*randu<mat>(n_,r_);
+	U_old_ = 5*randu<mat>(n_,r_);
     //U_old_ = mat(n_,r_,fill::ones);
 
 	// Initialize H
     //std::cout<< "Initializing H_old..." << std::endl;
 
-    H_old_ = eye<mat>(r_,k_);
+    H_old_ = 2.5*randu<mat>(r_,k_);
     // H_old_ = mat(r_,k_,fill::eye);
 
     // Initialize V
@@ -198,9 +198,18 @@ void AMF::solve()
 void AMF::solve_With_Log() 
 {
 
+	// solve_pg_U_With_Log();
+
 	solve_pg_U_With_Log();
 
-	// Remember to swap the variables
+	solve_pg_H_With_Log();
+
+
+
+	// Remember to swap the variables at the very end
+
+	swap(U_,U_old_);
+	swap(H_,H_old_);
 
 }
 

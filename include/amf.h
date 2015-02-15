@@ -76,7 +76,8 @@ class AMF
 
         void solve_pg_H_With_Log();
 
-        void solve_pg_H_One_Iteration(arma::mat &G);
+        void solve_pg_H_One_Iteration(arma::mat G,const arma::mat &UtU, 
+                                        const arma::mat &VVt);
 
 
         void solve_V();
