@@ -199,25 +199,18 @@ void AMF::solve_With_Log()
 {
 	total_logfile_.open("log_iterations.txt");
 
-	for (int i=0 ; i<2 ; ++i)
+	for (int i=0 ; i<n_max_iter_ ; ++i)
 	{
-
 		std::cout << "SOLVING FOR U ..." << std::endl;
-
 		solve_pg_U_With_Log();
 
-
 		std::cout << "SOLVING FOR H ..." << std::endl;
-
-
 		solve_pg_H_With_Log();
 
 		swap(U_,U_old_);
 		swap(H_,H_old_);
 
 	}
-
-
 
 
 
