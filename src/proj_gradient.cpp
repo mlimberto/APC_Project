@@ -235,14 +235,15 @@ void AMF::solve_pg_H_With_Log(){
         prec_obj = curr_obj;
         curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
 
-        // if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
-        // 	stop_criterion = true;
+        if (abs(prec_obj - curr_obj)/curr_obj < toll_gradient_)
+        	stop_criterion = true;
 
         // Save information on logfile
         logfile << curr_obj << std::endl;
 
         // Print information
         std::cout << "Iteration " << n+1 << " : Objective function = " << curr_obj << std::endl;
+        std::cout << abs(curr_obj - prec_obj)/curr_obj << std::endl;
 
     }
 
@@ -264,15 +265,52 @@ void AMF::solve_pg_H_One_Iteration(mat &G){
                     q(i)=q(i)+as_scalar((U_.row(i)*H_*V_old_.col(j)-build_S(i,j,URM_Tr_,U_old_,H_old_, V_old_))*V_old_(beta,j));
                 }
             }
-            G(alpha,beta)=2*dot(U_.col(alpha),q)+2*lambda_*H_(alpha,beta);
+            // G(alpha,beta)=2*dot(U_.col(alpha),q)+2*lambda_*H_(alpha,beta);
+            G(alpha,beta)=dot(U_.col(alpha),q)+lambda_*H_(alpha,beta);
 
         }
     }
 
+	// Find a feasible step
+	double sigma = 0.01;
+	double beta = 0.1;
+	double current_step = 1;
+	bool is_feasible = false;
+
+	mat A = (U_.t())*U_;
+
+	mat B(V_old_.n_rows,V_old_.n_rows,fill::zeros);
+	for (uword i = 0 ; i < V_old_.n_rows ; ++i )
+		for (uword j = 0 ; j < V_old_.n_rows ; ++j )
+		{
+			for (uword k = 0 ; k < V_old_.n_cols ; ++k )
+				B(i,j) += V_old_(i,k)*V_old_(j,k);
+		}
+
+	while(!is_feasible)
+	{
+		mat H_cand = H_ - current_step*G ;
+		get_Positive_Matrix(H_cand);
+		mat D = H_cand - H_ ;
+
+		double hessian_part = dot(D,A*D*(B.t())) + lambda_*dot(D,D) ;
+		hessian_part = 0.5*hessian_part;
+
+		double res = (1-sigma)*dot(G,D) + hessian_part ;
+
+		std::cout << "Step = " << current_step << " Value = " << res << " ";
+		std::cout <<( (res <= 0)?("Feasible"):("Not feasible") )<< std::endl;
+
+		if (res <=0)
+			is_feasible = true;
+		else 
+			current_step = beta*current_step;
+	}
+
+	std::cout << "Selected step is " << current_step << std::endl;
 
     // Update H_
-    H_ = H_ - gradient_step_*G;
-
-    // Projection step
+    H_ = H_ - current_step*G;
     get_Positive_Matrix(H_);
+
 }
