@@ -45,7 +45,7 @@ bool test_PG_U(AMF & amf )
 	URM(2,0) = -4; 
 	// URM(2,1) = 3.0;
 	URM(2,2) = 2.0; 
-	URM(3,3) = URM(3,4) = 2.0;
+	URM(3,3) = URM(3,4) = 4.0;
 	URM(4,4) = URM(4,2) = 1.0;
 
 

@@ -221,10 +221,12 @@ void AMF::solve_pg_H_With_Log(){
     H_ = H_old_;
 
     // Precompute UtU and VVt
+	std::cout << "Compiting UtU ..." << std::endl;
+
     mat UtU = (U_.t())*U_;
 
-    U_.print("U matrix");
-    UtU.print("UtU matrix");
+    std::cout << "Computing VVt ..." << std::endl;
+
 
     mat VVt(V_old_.n_rows,V_old_.n_rows,fill::zeros);
 	for (uword i = 0 ; i < V_old_.n_rows ; ++i )
@@ -238,20 +240,18 @@ void AMF::solve_pg_H_With_Log(){
     // Precompute linear part of the gradient
     mat G(H_.n_rows,H_.n_cols,fill::zeros);
 
-    // for (uword alpha =0 ; alpha< H_.n_rows ; ++alpha){
-    //     for (uword beta = 0 ; beta < H_.n_cols ; ++beta){
-    //         vec q(U_.n_rows,fill::zeros);
-    //         for(uword i=0; i<q.n_elem; ++i){
-    //             for(uword j=0; j<V_.n_cols; ++j){
-    //                 q(i)=q(i)+as_scalar(-build_S(i,j,URM_Tr_,U_old_,H_old_, V_old_)*V_old_(beta,j));
-    //             }
-    //         }
-    //         // G(alpha,beta)=2*dot(U_.col(alpha),q)+2*lambda_*H_(alpha,beta);
-    //         G(alpha,beta)=dot(U_.col(alpha),q) ;
+    std::cout << "Computing linear part of gradient ..." << std::endl;
 
-    //     }
-    // }
-
+	for (uword k = 0 ; k < U_.n_rows ; ++k)
+ 	for (uword l = 0 ; l < V_old_.n_cols ; ++l)
+ 	{
+ 		double aux = build_S(k,l,URM_Tr_,U_old_,H_old_, V_old_);
+		for (uword x =0 ; x< H_.n_rows ; ++x)
+		for (uword y = 0 ; y < H_.n_cols ; ++y)
+ 				G(x,y) = G(x,y) - U_(k,x)*aux*V_old_(y,l) ;
+       	
+    }
+    
     bool stop_criterion = false;
 
     double prec_obj(0) , curr_obj(0);
@@ -266,7 +266,7 @@ void AMF::solve_pg_H_With_Log(){
         curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
 
         if (abs(prec_obj - curr_obj)/curr_obj < toll_gradient_)
-        	stop_criterion = false; // RISISTEMA!!!
+        	stop_criterion = true; 
 
         // Save information on logfile
         logfile << curr_obj << std::endl;
@@ -283,23 +283,10 @@ void AMF::solve_pg_H_With_Log(){
 
 void AMF::solve_pg_H_One_Iteration(mat G,const mat &UtU, const mat &VVt){
 
-    // Compute quadratic part of the gradient
-    for (uword alpha =0 ; alpha< H_.n_rows ; ++alpha){
-        for (uword beta = 0 ; beta < H_.n_cols ; ++beta){
-            vec q(U_.n_rows,fill::zeros);
-            for(uword i=0; i<q.n_elem; ++i){
-                for(uword j=0; j<V_.n_cols; ++j){
-                    q(i)=q(i)+as_scalar((U_.row(i)*H_*V_old_.col(j)-build_S(i,j,URM_Tr_,U_old_,H_old_, V_old_))*V_old_(beta,j));
-                }
-            }
-            // G(alpha,beta)=2*dot(U_.col(alpha),q)+2*lambda_*H_(alpha,beta);
-            G(alpha,beta)=dot(U_.col(alpha),q);
+	// Update gradient with non-constant part
 
-        }
-    }
+    G = G + UtU*H_*VVt + lambda_*H_;
 
-    G = G+ lambda_*H_;
-    // G += UtU*H_*VVt + lambda_*H_;
 
 	// Find a feasible step
 	double sigma = 0.01;

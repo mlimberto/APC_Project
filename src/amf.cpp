@@ -197,10 +197,13 @@ void AMF::solve()
 
 void AMF::solve_With_Log() 
 {
-
-	// solve_pg_U_With_Log();
+	std::cout << "SOLVING FOR U ..." << std::endl;
 
 	solve_pg_U_With_Log();
+
+
+	std::cout << "SOLVING FOR H ..." << std::endl;
+
 
 	solve_pg_H_With_Log();
 
