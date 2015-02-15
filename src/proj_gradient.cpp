@@ -73,6 +73,8 @@ void AMF::solve_pg_U_With_Log()
 
 	mat G(U_.n_rows,U_.n_cols,fill::zeros);
 
+	gradient_step_ = 1.0;
+
 	// Compute the linear part of the gradient
 	for (uword x =0 ; x< U_.n_rows ; ++x)
 		for (uword y = 0 ; y < U_.n_cols ; ++y)
@@ -84,10 +86,6 @@ void AMF::solve_pg_U_With_Log()
 
 			G(x,y) = - ll ; 
 		}
-
-	#ifndef NDEBUG
-	G.print("Linear part of G");
-	#endif
 
 
 	bool stop_criterion = false;
@@ -102,8 +100,12 @@ void AMF::solve_pg_U_With_Log()
 		prec_obj = curr_obj;
 		curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_);
 
-		// if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
-		// 	stop_criterion = true;
+		if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
+			stop_criterion = true;
+
+		#ifndef NDEBUG
+		std::cout << "old_obj " << prec_obj << " new_obj" << curr_obj << std::endl;
+		#endif
 
 		// Save information on logfile
 		logfile << curr_obj << "\n";
@@ -113,9 +115,6 @@ void AMF::solve_pg_U_With_Log()
 
 	}
 
-	#ifndef NDEBUG
-	U_.print("U matrix");
-	#endif
 
 	logfile.close();
 }
@@ -128,31 +127,50 @@ void AMF::solve_pg_U_One_Iteration(mat G,const mat &A, const arma::mat &AAt)
 	// Find a feasible step
 	double sigma = 0.01;
 	double beta = 0.1;
-	double current_step = 100;
 	bool is_feasible = false;
+
+	// Make a first try ...
+	mat U_cand = U_ - gradient_step_*G -gradient_step_*lambda_*U_ ;
+	get_Positive_Matrix(U_cand);
+	mat D = U_cand - U_ ;
+	
+	double res = (1-sigma)*dot(G,D) + 
+				0.5*dot(D , D *(AAt + lambda_*eye(G.n_cols,G.n_cols) )) ;
+
+	std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
+	std::cout <<( (res <= 0)?("First is feasible"):("First is not feasible") )<< std::endl;
+
+	if (res <=0)
+	{
+		gradient_step_ = gradient_step_ / beta;
+	}
+	else
+		gradient_step_ = gradient_step_ * beta;
+
+	// Let's keep on trying ...
 
 	while(!is_feasible)
 	{
-		mat U_cand = U_ - current_step*G -current_step*lambda_*U_ ;
+		U_cand = U_ - gradient_step_*G -gradient_step_*lambda_*U_ ;
 		get_Positive_Matrix(U_cand);
-		mat D = U_cand - U_ ;
+		D = U_cand - U_ ;
 
-		double res = (1-sigma)*dot(G,D) + 
-					0.5*dot(D , D *(AAt + lambda_*eye(G.n_cols,G.n_cols) )) ;
+		res = (1-sigma)*dot(G,D) + 
+				0.5*dot(D , D *(AAt + lambda_*eye(G.n_cols,G.n_cols) )) ;
 
-		std::cout << "Step = " << current_step << " Value = " << res << " ";
+		std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
 		std::cout <<( (res <= 0)?("Feasible"):("Not feasible") )<< std::endl;
 
 		if (res <=0)
 			is_feasible = true;
 		else 
-			current_step = beta*current_step;
+			gradient_step_ = beta*gradient_step_;
 	}
 
-	std::cout << "Selected step is " << current_step << std::endl;
+	std::cout << "Selected step is " << gradient_step_ << std::endl;
 
 	// Update U_ 
-	U_ = U_ - current_step*G -current_step*lambda_*U_ ;
+	U_ = U_ - gradient_step_*G -gradient_step_*lambda_*U_ ;
 	get_Positive_Matrix(U_);
 
 
@@ -163,7 +181,7 @@ void AMF::solve_pg_H(){
     std::cout << "Solving projected gradient for H " << std::endl;
     #endif
 
-    // Initialize U (check what is best)
+    // Initialize H (with warm up)
     H_ = H_old_;
 
     // Allocate and compute the temporary matrix A := H*V
@@ -178,9 +196,7 @@ void AMF::solve_pg_H(){
 
     for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n )
     {
-        // #ifndef NDEBUG
-        // std::cout <<"Gradient method for H, iteration " << n << std::endl;
-        // #endif
+
 
 
         // Perform the gradient step
@@ -190,7 +206,8 @@ void AMF::solve_pg_H(){
         prec_obj = curr_obj;
         curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
 
-        if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
+        // Added extra security measure to stop criterium
+        if (abs(prec_obj - curr_obj)/curr_obj < toll_gradient_)
             stop_criterion = true;
 
     }
@@ -200,7 +217,7 @@ void AMF::solve_pg_H_With_Log(){
 
     std::ofstream logfile("log_pg_h.txt");
 
-    // Initialize H (check what is best)
+    // Initialize H (with warm up)
     H_ = H_old_;
 
     mat G(H_.n_rows,H_.n_cols,fill::zeros);
