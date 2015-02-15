@@ -25,6 +25,9 @@
 class AMF
 {
     // ATTRIBUTES
+
+        // Log file
+        std::ofstream total_logfile_;
     
         // Parameters
         double lambda_ ; // Over-fitting parameter

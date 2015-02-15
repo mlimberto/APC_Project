@@ -197,22 +197,31 @@ void AMF::solve()
 
 void AMF::solve_With_Log() 
 {
-	std::cout << "SOLVING FOR U ..." << std::endl;
+	total_logfile_.open("log_iterations.txt");
 
-	solve_pg_U_With_Log();
+	for (int i=0 ; i<2 ; ++i)
+	{
 
+		std::cout << "SOLVING FOR U ..." << std::endl;
 
-	std::cout << "SOLVING FOR H ..." << std::endl;
-
-
-	solve_pg_H_With_Log();
-
+		solve_pg_U_With_Log();
 
 
-	// Remember to swap the variables at the very end
+		std::cout << "SOLVING FOR H ..." << std::endl;
 
-	swap(U_,U_old_);
-	swap(H_,H_old_);
+
+		solve_pg_H_With_Log();
+
+		swap(U_,U_old_);
+		swap(H_,H_old_);
+
+	}
+
+
+
+
+
+	total_logfile_.close();
 
 }
 

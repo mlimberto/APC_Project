@@ -109,6 +109,7 @@ void AMF::solve_pg_U_With_Log()
 
 		// Save information on logfile
 		logfile << curr_obj << "\n";
+		total_logfile_ << curr_obj << "\n";
 
 		// Print information
 		std::cout << "Iteration " << n+1 << " : Objective function = " << curr_obj << std::endl;
@@ -270,6 +271,8 @@ void AMF::solve_pg_H_With_Log(){
 
         // Save information on logfile
         logfile << curr_obj << std::endl;
+		total_logfile_ << curr_obj << "\n";
+
 
         // Print information
         std::cout << "Iteration " << n+1 << " : Objective function = " << curr_obj << std::endl;
