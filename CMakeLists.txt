@@ -22,5 +22,5 @@ add_executable(out src/my_utils.cpp
 				   src/compute_v.cpp
 				   src/proj_gradient.cpp 
 				   src/amf.cpp
-				   tests/test_pg_h.cpp 
+				   src/main.cpp
 				   )

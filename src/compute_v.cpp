@@ -39,7 +39,7 @@ void AMF::solve_V_With_Log()
 
     mat G(V_.n_rows,V_.n_cols,fill::zeros);
 
-    gradient_step_ = 1.0;
+    gradient_step_ = 1e-6;
 
     // Compute the linear part of the gradient
     std::cout << "Computing linear part of gradient..." << std::endl;
@@ -56,7 +56,7 @@ void AMF::solve_V_With_Log()
 
     for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n ) 
     {
-        solve_V_One_Iteration(G,WtW);
+        solve_V_One_Iteration(G,WtW,curr_obj);
 
         // Evaluate stop criterion
         prec_obj = curr_obj;
@@ -83,17 +83,13 @@ void AMF::solve_V_With_Log()
 
 }
 
-void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW)
+void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, double prec_obj)
 {
     // Update gradient with quadratic part
     G += WtW*V_;
 
-    // Find a feasible step
 
-    gradient_step_ = 1e-6;
-
-
-    // std::cout << "Selected step is " << gradient_step_ << std::endl;
+    std::cout << "Selected step is " << gradient_step_ << std::endl;
 
     // Update V
     mat V_hat = V_ - gradient_step_*G ;

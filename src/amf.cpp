@@ -219,6 +219,9 @@ void AMF::solve_With_Log()
 		std::swap(H_,H_old_);
 		std::swap(V_,V_old_);
 
+		total_logfile_ << evaluate_Obj_Function(URM_Tr_,U_old_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_) << "\n" ;
+
+
 	}
 
 	total_logfile_.close();
