@@ -35,15 +35,15 @@ new_labels = dictionary.stems(indexes);
 
 %% Sottocampionamento del numero di utenti
 
-N_USERS = 500; % We want to keep only a small number of users
+N_USERS = 4000; % We want to keep only a small number of users
 
-urm_sampling = urm(1:N_USERS,:);
+
 
 %% Sottocampionamento degli items
+[n,m]=size(urm);
+N_ITEMS =104; %% round(N_USERS*size(urm,2)/size(urm,1));
 
-N_ITEMS = 1000;
-
-urm_sampling = urm_sampling(:,1:N_ITEMS);
+urm_sampling = urm(1:N_USERS,1:N_ITEMS);
 
 icm_sampling = icm_sampling(:,1:N_ITEMS);
 
