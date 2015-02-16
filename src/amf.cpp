@@ -203,18 +203,21 @@ void AMF::solve_With_Log()
 	{
 		std::cout << "Iteration " << i+1 << std::endl;
 
+		U_ = U_old_ ;
+		H_ = H_old_ ;
+
 		std::cout << "SOLVING FOR U ..." << std::endl;
 		solve_pg_U_With_Log();
 
 		std::cout << "SOLVING FOR H ..." << std::endl;
 		solve_pg_H_With_Log();
 
-		// std::cout << "SOLVING FOR V ..." << std::endl;
-		// solve_V_With_Log();
+		std::cout << "SOLVING FOR V ..." << std::endl;
+		solve_V_With_Log();
 
 		std::swap(U_,U_old_);
 		std::swap(H_,H_old_);
-		// std::swap(V_,V_old_);
+		std::swap(V_,V_old_);
 
 	}
 

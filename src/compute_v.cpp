@@ -62,8 +62,8 @@ void AMF::solve_V_With_Log()
         prec_obj = curr_obj;
         curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_,U_old_,H_old_,V_old_,lambda_);
 
-        // if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
-        //     stop_criterion = true;
+        if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
+            stop_criterion = true;
 
         #ifndef NDEBUG
         std::cout << "old_obj " << prec_obj << " new_obj" << curr_obj << std::endl;
@@ -89,60 +89,11 @@ void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW)
     G += WtW*V_;
 
     // Find a feasible step
-    double sigma = 0.01;
-    double beta = 0.1;
-    bool is_feasible = false;
 
-    // Make a first step...
-    // mat V_hat = V_ - gradient_step_*G ;
+    gradient_step_ = 1e-6;
 
-    // sp_mat V_cand(V_.n_rows,V_.n_cols);
-    // project_V(V_cand,V_hat);
 
-    // sp_mat D = V_cand - V_ ;
-
-    // double res = (1-sigma)*dot(G,D) + 
-    //             0.5*dot(D ,WtW*D) ;
-
-    // std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
-    // std::cout <<( (res <= 0)?("First is feasible so I increase the step"):("First is not feasible") )<< std::endl;
-
-    // if (res <=0)
-    // {
-    //     gradient_step_ = gradient_step_ / beta;
-    // }
-    // else
-    //     gradient_step_ = gradient_step_ * beta;
-
-    // Let's keep on rolling ...
-
-    gradient_step_ = 0.01;
-
-    while(!is_feasible)
-    {
-        mat V_hat = V_ - gradient_step_*G ;
-
-        sp_mat V_cand(V_.n_rows,V_.n_cols);
-        project_V(V_cand,V_hat);
-
-        sp_mat D = V_cand - V_ ;
-
-        double res = (1-sigma)*dot(G,D) + 
-                0.5*dot(D ,WtW*D) ;
-
-        std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
-        std::cout <<( (res <= 0)?("Feasible"):("Not feasible") )<< std::endl;
-
-        if (res <=0)
-            is_feasible = true;
-        else 
-            gradient_step_ = beta*gradient_step_;
-
-        if (gradient_step_ < 1e-10 )
-            break;
-    }
-
-    std::cout << "Selected step is " << gradient_step_ << std::endl;
+    // std::cout << "Selected step is " << gradient_step_ << std::endl;
 
     // Update V
     mat V_hat = V_ - gradient_step_*G ;
