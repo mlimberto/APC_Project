@@ -24,6 +24,165 @@ void AMF::solve_V(){
 
 }
 
+void AMF::solve_V_With_Log()
+{
+    std::ofstream logfile;
+    logfile.open("log_pg_v.txt");
+
+    // Initialize V (with "warm-up")
+    V_ = V_old_;
+
+    std::cout << "Computing W = UH ..." << std::endl;
+    mat W = U_*H_;
+    std::cout << "Computing WtW" << std::endl;
+    mat WtW = (W.t())*W;
+
+    mat G(V_.n_rows,V_.n_cols,fill::zeros);
+
+    gradient_step_ = 1.0;
+
+    // Compute the linear part of the gradient
+    std::cout << "Computing linear part of gradient..." << std::endl;
+    for (uword x = 0; x < G.n_rows ; ++x)
+        for (uword y = 0; y < G.n_cols ; ++y)
+        {
+            for (uword k=0 ; k< W.n_rows ; ++k)
+                G(x,y) = G(x,y) - W(k,x)*build_S(k,y,URM_Tr_,U_old_,H_old_, V_old_);
+        }
+
+    bool stop_criterion = false;
+
+    double prec_obj(0) , curr_obj(0);
+
+    for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n ) 
+    {
+        solve_V_One_Iteration(G,WtW);
+
+        // Evaluate stop criterion
+        prec_obj = curr_obj;
+        curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_,U_old_,H_old_,V_old_,lambda_);
+
+        // if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
+        //     stop_criterion = true;
+
+        #ifndef NDEBUG
+        std::cout << "old_obj " << prec_obj << " new_obj" << curr_obj << std::endl;
+        #endif
+
+        // Save information on logfile
+        logfile << curr_obj << "\n";
+        total_logfile_ << curr_obj << "\n";
+
+        // Print information
+        std::cout << "Iteration " << n+1 << " : Objective function = " << curr_obj << std::endl;
+
+    }
+
+
+    logfile.close();
+
+}
+
+void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW)
+{
+    // Update gradient with quadratic part
+    G += WtW*V_;
+
+    // Find a feasible step
+    double sigma = 0.01;
+    double beta = 0.1;
+    bool is_feasible = false;
+
+    // Make a first step...
+    // mat V_hat = V_ - gradient_step_*G ;
+
+    // sp_mat V_cand(V_.n_rows,V_.n_cols);
+    // project_V(V_cand,V_hat);
+
+    // sp_mat D = V_cand - V_ ;
+
+    // double res = (1-sigma)*dot(G,D) + 
+    //             0.5*dot(D ,WtW*D) ;
+
+    // std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
+    // std::cout <<( (res <= 0)?("First is feasible so I increase the step"):("First is not feasible") )<< std::endl;
+
+    // if (res <=0)
+    // {
+    //     gradient_step_ = gradient_step_ / beta;
+    // }
+    // else
+    //     gradient_step_ = gradient_step_ * beta;
+
+    // Let's keep on rolling ...
+
+    gradient_step_ = 0.01;
+
+    while(!is_feasible)
+    {
+        mat V_hat = V_ - gradient_step_*G ;
+
+        sp_mat V_cand(V_.n_rows,V_.n_cols);
+        project_V(V_cand,V_hat);
+
+        sp_mat D = V_cand - V_ ;
+
+        double res = (1-sigma)*dot(G,D) + 
+                0.5*dot(D ,WtW*D) ;
+
+        std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
+        std::cout <<( (res <= 0)?("Feasible"):("Not feasible") )<< std::endl;
+
+        if (res <=0)
+            is_feasible = true;
+        else 
+            gradient_step_ = beta*gradient_step_;
+
+        if (gradient_step_ < 1e-10 )
+            break;
+    }
+
+    std::cout << "Selected step is " << gradient_step_ << std::endl;
+
+    // Update V
+    mat V_hat = V_ - gradient_step_*G ;
+    project_V(V_,V_hat);
+
+}     
+
+void AMF::project_V(arma::sp_mat &V_new ,arma::mat &V_hat)
+{
+    // Projection on ICM
+    sp_mat T_hat=project_ICM(V_hat);
+
+    uvec sorted_indices;
+
+    for(uword j=0; j<T_hat.n_cols;++j){
+        uword n_nonzero=T_hat.col(j).n_nonzero;
+        sorted_indices=sort_index(mat(T_hat).col(j),"descend");
+        vec t_hat=sort(mat(T_hat).col(j),"descend");
+
+        double tau=0;
+        double tau_old=0;
+        for(uword i=0;i<n_nonzero;++i){
+            // Computing tau
+            tau_old=(double)(sum(t_hat(span(0,i)))-1)/(i+1);
+            if(tau_old<t_hat(i)){
+                tau=tau_old;
+            }
+        }
+        uword i=0;
+        while(i<n_nonzero && t_hat(i)-tau>0){
+             V_new(sorted_indices(i),j)=t_hat(i)-tau;
+            i++;
+        }
+    }
+
+}
+
+
+
+
 sp_mat AMF::solve_V_One_Step_Gradient(const sp_mat &V_0){
 
     std::cout<<"Solving One gradient Step"<<std::endl;
