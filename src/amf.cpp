@@ -209,12 +209,12 @@ void AMF::solve_With_Log()
 		std::cout << "SOLVING FOR H ..." << std::endl;
 		solve_pg_H_With_Log();
 
-		std::cout << "SOLVING FOR V ..." << std::endl;
-		solve_V_With_Log();
+		// std::cout << "SOLVING FOR V ..." << std::endl;
+		// solve_V_With_Log();
 
 		std::swap(U_,U_old_);
 		std::swap(H_,H_old_);
-		std::swap(V_,V_old_);
+		// std::swap(V_,V_old_);
 
 	}
 
