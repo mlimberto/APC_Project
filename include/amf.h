@@ -25,6 +25,9 @@
 class AMF
 {
     // ATTRIBUTES
+
+        // Log file
+        std::ofstream total_logfile_;
     
         // Parameters
         double lambda_ ; // Over-fitting parameter
@@ -69,17 +72,24 @@ class AMF
 
         void solve_pg_U_With_Log();
 
-        void solve_pg_U_One_Iteration(arma::mat &G,const arma::mat &A);
+        void solve_pg_U_One_Iteration(arma::mat G,const arma::mat &A, const arma::mat &AAt);
 
 
         void solve_pg_H();
 
         void solve_pg_H_With_Log();
 
-        void solve_pg_H_One_Iteration(arma::mat &G);
+        void solve_pg_H_One_Iteration(arma::mat G,const arma::mat &UtU, 
+                                        const arma::mat &VVt);
 
 
         void solve_V();
+
+        void solve_V_With_Log();
+
+        void solve_V_One_Iteration(arma::mat G,const arma::mat &WtW);   
+
+        void project_V(arma::sp_mat &V_new ,arma::mat &V_hat);    
 
         arma::sp_mat solve_V_One_Step_Gradient(const arma::sp_mat &V_0);
         arma::sp_mat solve_V_One_Step_Gradient2(const arma::sp_mat &V_0);
@@ -92,6 +102,7 @@ public :
 
     friend bool test_PG_U(AMF & amf); // For testing purposes
     friend bool test_PG_H(AMF & amf );
+    friend bool test_PG_V(AMF & amf );
     friend bool test_orthogonal_projection();
     friend bool test_project_ICM();
     friend bool test_check_method2();
