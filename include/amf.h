@@ -67,6 +67,8 @@ class AMF
 
         void solve_one_iteration();
 
+        void solve_for_tuning();
+
 
         void solve_pg_U();
 
@@ -97,6 +99,8 @@ class AMF
         arma::mat project_URM_Tr_by_column(arma::uword j, const arma::mat &S);
 
         void orthogonal_projection(arma::sp_mat &G);
+
+        double evaluate_Against_URM_Validation();
     
 public :
 

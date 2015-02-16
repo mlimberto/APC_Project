@@ -218,9 +218,12 @@ void AMF::solve_With_Log()
 
 	}
 
-
-
 	total_logfile_.close();
+
+}
+
+void AMF::solve_for_tuning()
+{
 
 }
 
@@ -277,4 +280,10 @@ umat AMF::get_TopN_Recommendation(uword N)
 
 
 	return REC;
+}
+
+double evaluate_Against_URM_Validation()
+{
+
+	return 0;
 }
