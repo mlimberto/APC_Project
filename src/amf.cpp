@@ -23,7 +23,19 @@ lambda_(0),n_max_iter_(100),toll_(0.001)
 
 AMF::AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string param_filename)
 {
-	std::cout << "Creating instance of AMF" << std::endl;
+	std::cout << "Creating instance of AMF ..." << std::endl << std::endl;
+
+	#ifndef NDEBUG
+		std::cout << "Debugging printouts are ON" << std::endl;
+	#else
+		std::cout << "Debugging printouts are OFF" << std::endl;
+	#endif
+
+	#ifdef AMFTIME
+		std::cout << "Time measurements are ON" << std::endl;
+	#else
+		std::cout << "Time measurements are OFF" << std::endl;
+	#endif	
 
 	if (!initialize_Parameters(param_filename))
 	{
@@ -48,8 +60,17 @@ AMF::AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string para
 
 	initialize_matrices();
 
+	#ifndef NDEBUG
+	std::cout << "Instance was successfully created" << std::endl;
+	#endif
 
-	std::cout << "...done!" << std::endl;
+	// Print some useful information
+	#ifndef NDEBUG
+	std::cout << "N = " << n_ << "  [number of users]" << std::endl;
+	std::cout << "M = " << m_ << "  [number of items]" << std::endl;
+	std::cout << "L = " << k_ << "  [number of labels]" << std::endl;
+	std::cout << "R = " << r_ << "  [number of latent factors]" << std::endl;
+	#endif
 
 }
 
@@ -165,7 +186,6 @@ void AMF::initialize_matrices(){
     // H_old_ = mat(r_,k_,fill::eye);
 
     // Initialize V
-    std::cout <<"Initializing V_old..."<<std::endl;
     uword n_nonzero(0);
     V_old_=sp_mat(ICM_.n_rows,ICM_.n_cols);
     for (uword j = 0 ; j < ICM_.n_cols ; ++j){
@@ -199,20 +219,21 @@ void AMF::solve_With_Log()
 {
 	total_logfile_.open("log_iterations.txt");
 
-	for (int i=0 ; i<n_max_iter_ ; ++i)
+	for (unsigned int i=0 ; i<n_max_iter_ ; ++i)
 	{
-		std::cout << "Iteration " << i+1 << std::endl;
 
-		U_ = U_old_ ;
-		H_ = H_old_ ;
+		std::cout << std::endl <<"##############" << std::endl << "Iteration " << i+1 << std::endl << "##############" << std::endl << std::endl ;
 
 		std::cout << "SOLVING FOR U ..." << std::endl;
+
 		solve_pg_U_With_Log();
 
 		std::cout << "SOLVING FOR H ..." << std::endl;
+
 		solve_pg_H_With_Log();
 
 		std::cout << "SOLVING FOR V ..." << std::endl;
+
 		solve_V_With_Log();
 
 		std::swap(U_,U_old_);
@@ -257,7 +278,7 @@ umat AMF::get_TopN_Recommendation(uword N)
 
 	for (uword i=0 ; i < n_ ; i++)
 	{
-		// for every row of URM_Tr set a row vecor v in which we fill the zeros
+		// for every row of URM_Tr set a row vector v in which we fill the zeros
 		// of URM_Tr with the predictions. If URM_Tr is different from zero,
 		// we set v to 0, so we don't consider the evaluations already done
 		// from a user

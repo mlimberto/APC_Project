@@ -15,6 +15,10 @@
 
 #include "my_utils.h"
 
+#ifdef AMFTIME
+#include <chrono>
+#endif
+
 
 // Definition of class AMF (Augmented matrix factorization)
 

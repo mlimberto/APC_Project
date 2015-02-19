@@ -32,23 +32,48 @@ void AMF::solve_V_With_Log()
     // Initialize V (with "warm-up")
     V_ = V_old_;
 
+    // Compute W and WtW
+
+    #ifndef NDEBUG
     std::cout << "Computing W = UH ..." << std::endl;
+    #endif
+
     mat W = U_*H_;
+    
+    #ifndef NDEBUG
     std::cout << "Computing WtW" << std::endl;
+    #endif
+
     mat WtW = (W.t())*W;
+
+    // Initialize the gradient matrix and set the gradient step
 
     mat G(V_.n_rows,V_.n_cols,fill::zeros);
 
     gradient_step_ = 1e-6;
 
     // Compute the linear part of the gradient
+    #ifndef NDEBUG
     std::cout << "Computing linear part of gradient..." << std::endl;
+    #endif
+
+    #ifdef AMFTIME 
+    auto begin_LV = std::chrono::high_resolution_clock::now();
+    #endif
+
     for (uword x = 0; x < G.n_rows ; ++x)
         for (uword y = 0; y < G.n_cols ; ++y)
         {
             for (uword k=0 ; k< W.n_rows ; ++k)
                 G(x,y) = G(x,y) - W(k,x)*build_S(k,y,URM_Tr_,U_old_,H_old_, V_old_);
         }
+
+    #ifdef AMFTIME
+    auto end_LV = std::chrono::high_resolution_clock::now();
+    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end_LV-begin_LV).count() << "ms" << std::endl;
+    #endif
+
+    // Run the loop
 
     bool stop_criterion = false;
 
@@ -88,9 +113,6 @@ void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, double prec_ob
     // Update gradient with quadratic part
     G += WtW*V_;
 
-
-    std::cout << "Selected step is " << gradient_step_ << std::endl;
-
     // Update V
     mat V_hat = V_ - gradient_step_*G ;
     project_V(V_,V_hat);
@@ -102,6 +124,8 @@ void AMF::project_V(arma::sp_mat &V_new ,arma::mat &V_hat)
     // Projection on ICM
     sp_mat T_hat=project_ICM(V_hat);
 
+
+    // Projection on SUM = 1
     uvec sorted_indices;
 
     for(uword j=0; j<T_hat.n_cols;++j){
