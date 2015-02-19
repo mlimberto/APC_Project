@@ -27,7 +27,7 @@ void AMF::solve_V(){
 void AMF::solve_V_With_Log()
 {
     std::ofstream logfile;
-    logfile.open("log_pg_v.txt");
+    logfile.open(amf_filename_prefix_+"log_pg_v.txt");
 
     // Initialize V (with "warm-up")
     V_ = V_old_;

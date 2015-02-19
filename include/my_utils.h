@@ -48,6 +48,7 @@ double evaluate_Obj_Function(const arma::sp_mat& URM,const arma::mat& U,
 							 const arma::mat& U_old,const arma::mat& H_old,
 							 const arma::sp_mat& V_old, const double lambda);
 
+// This functions projects a matrix on the space of positive matrices
 void get_Positive_Matrix(arma::mat &U) ;
 
 arma::uvec get_Vector_Of_Indices(const arma::umat &L);

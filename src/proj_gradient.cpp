@@ -63,7 +63,7 @@ void AMF::solve_pg_U() // STILL WORK IN PROGRESS!!!!
 void AMF::solve_pg_U_With_Log()
 {
 	std::ofstream logfile;
-	logfile.open("log_pg_u.txt");
+	logfile.open(amf_filename_prefix_+"log_pg_u.txt");
 
 	// Initialize U (with "warm-up")
 	U_ = U_old_;
@@ -237,7 +237,7 @@ void AMF::solve_pg_H(){
 
 void AMF::solve_pg_H_With_Log(){
 
-    std::ofstream logfile("log_pg_h.txt");
+    std::ofstream logfile(amf_filename_prefix_+"log_pg_h.txt");
 
     // Initialize H (with warm up)
     H_ = H_old_;

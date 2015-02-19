@@ -32,6 +32,8 @@ class AMF
 
         // Log file
         std::ofstream total_logfile_;
+
+        std::string amf_filename_prefix_;
     
         // Parameters
         double lambda_ ; // Over-fitting parameter
@@ -161,6 +163,13 @@ public :
 
     inline void print_ICM(){ICM_.print("ICM =");}
     inline void print_URM_Tr(){URM_Tr_.print("URM =");}
+
+    // EXPORT TO FILE METHODS
+
+    void export_Results()
+    {
+
+    }
 
 };
 

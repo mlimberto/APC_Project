@@ -17,6 +17,7 @@ using namespace arma;
 AMF::AMF() :
 lambda_(0),n_max_iter_(100),toll_(0.001)
 {
+	amf_filename_prefix_ = "";
 	std::cout << "WARNING : The default constructor has been called, so your instance is still basically empty." << std::endl;
     
 }
@@ -42,17 +43,25 @@ AMF::AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string para
 		std::cout << "WARNING : Initialization of parameters from file didn't work properly" << std::endl;
 	}
 
+	#ifndef NDEBUG
+	std::cout << "Importing URM " << std::endl;
+	#endif
+
 	if (!import_Sparse_Matrix<double>(URM_Tr_filename,URM_Tr_,URM_Tr_Location_Matrix_,URM_Tr_Values_))
 	{
 		std::cout << "WARNING : Initialization of URM matrix from file didn't work properly" << std::endl;
 	}
+
+	#ifndef NDEBUG
+	std::cout << "Importing ICM " << std::endl;
+	#endif
 
 	if (!import_Sparse_Matrix<unsigned int>(ICM_filename,ICM_,ICM_Location_Matrix_,ICM_Values_))
 	{
 		std::cout << "WARNING : Initialization of ICM matrix from file didn't work properly" << std::endl;
 	}
 
-	// INITIALIZE ALL THE OTHER STUFF
+	// Initialize the matrices
 
 	n_ = URM_Tr_.n_rows;
 	m_ = ICM_.n_cols;
@@ -60,20 +69,21 @@ AMF::AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string para
 
 	initialize_matrices();
 
+	// Set a consistent filename
+	amf_filename_prefix_ = "amf_" + std::to_string(r_) + "_" + std::to_string(lambda_) + "_" ;
+
 	#ifndef NDEBUG
-	std::cout << "Instance was successfully created" << std::endl;
+	std::cout << "Setting filename name " << amf_filename_prefix_ << std::endl;
 	#endif
 
 	// Print some useful information
-	#ifndef NDEBUG
+
 	std::cout << "N = " << n_ << "  [number of users]" << std::endl;
 	std::cout << "M = " << m_ << "  [number of items]" << std::endl;
 	std::cout << "L = " << k_ << "  [number of labels]" << std::endl;
 	std::cout << "R = " << r_ << "  [number of latent factors]" << std::endl;
-	#endif
 
 }
-
 
 
 //////////////////////////
@@ -81,8 +91,6 @@ AMF::AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string para
 //////////////////////////
 
 
-// TODO La funzione non verifica che tutti i parametri siano stati 
-// inizializzati, sarebbe da fare ma non prioritario
 bool AMF::initialize_Parameters(std::string filename)
 {
 	#ifndef NDEBUG
@@ -173,19 +181,14 @@ void AMF::initialize_matrices(){
 	std::cout << "Initializing matrices U,H,V ... " << std::endl;
 	#endif
 
-	// Initialize U 
-    //std::cout<< "Initializing U_old..." << std::endl;
+	// Random initialization of matrices
 
-	U_old_ = 5*randu<mat>(n_,r_);
-    //U_old_ = mat(n_,r_,fill::ones);
+	U_old_ = randu<mat>(n_,r_);
 
-	// Initialize H
-    //std::cout<< "Initializing H_old..." << std::endl;
-
-    H_old_ = 2.5*randu<mat>(r_,k_);
-    // H_old_ = mat(r_,k_,fill::eye);
+    H_old_ = randu<mat>(r_,k_);
 
     // Initialize V
+
     uword n_nonzero(0);
     V_old_=sp_mat(ICM_.n_rows,ICM_.n_cols);
     for (uword j = 0 ; j < ICM_.n_cols ; ++j){
@@ -217,7 +220,7 @@ void AMF::solve()
 
 void AMF::solve_With_Log() 
 {
-	total_logfile_.open("log_iterations.txt");
+	total_logfile_.open(amf_filename_prefix_+"log_iterations.txt");
 
 	for (unsigned int i=0 ; i<n_max_iter_ ; ++i)
 	{
