@@ -166,10 +166,7 @@ public :
 
     // EXPORT TO FILE METHODS
 
-    void export_Results()
-    {
-
-    }
+    void export_Results();
 
 };
 

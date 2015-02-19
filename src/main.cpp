@@ -29,6 +29,10 @@ int main(int argc,char** argv)
 
 	amf.solve_With_Log();
 
+	// Export results
+
+	amf.export_Results();
+
 
 
 

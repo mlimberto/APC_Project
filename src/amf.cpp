@@ -317,3 +317,21 @@ double evaluate_Against_URM_Validation()
 
 	return 0;
 }
+
+void AMF::export_Results()
+{
+
+	U_old_.save(amf_filename_prefix_+"U");
+
+	H_old_.save(amf_filename_prefix_+"H");
+
+	V_old_.save(amf_filename_prefix_+"V");
+
+}
+
+
+
+
+
+
+
