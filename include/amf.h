@@ -73,9 +73,6 @@ class AMF
 
         void solve_one_iteration();
 
-        void solve_for_tuning();
-
-
         void solve_pg_U();
 
         void solve_pg_U_With_Log();
@@ -116,6 +113,7 @@ public :
     friend bool test_orthogonal_projection();
     friend bool test_project_ICM();
     friend bool test_check_method2();
+    friend bool test_validation(AMF & amf);
 
     // CONSTRUCTORS and INITIALIZERS
     
@@ -130,6 +128,8 @@ public :
     void solve();
     
     void solve_With_Log();
+
+    void solve_for_tuning(std::string mfilename);
 
     // RECOMMENDATIONS
 

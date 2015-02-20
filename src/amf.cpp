@@ -252,8 +252,25 @@ void AMF::solve_With_Log()
 
 }
 
-void AMF::solve_for_tuning()
+void AMF::solve_for_tuning(std::string mfilename)
 {
+	// Load validation matrix 
+	#ifndef NDEBUG
+	std::cout << "Importing URM " << std::endl;
+	#endif
+
+	if (!import_Sparse_Matrix<double>(mfilename,URM_Val_,URM_Val_Location_Matrix_,URM_Val_Values_))
+	{
+		std::cout << "WARNING : Initialization of URM matrix from file didn't work properly" << std::endl;
+	}
+
+	#ifndef NDEBUG
+	std::cout << "Validation matrix successfully loaded" << std::endl;
+	URM_Val_.print("URM validation matrix");
+	#endif	
+
+	// Run the solver
+
 
 }
 
@@ -312,10 +329,21 @@ umat AMF::get_TopN_Recommendation(uword N)
 	return REC;
 }
 
-double evaluate_Against_URM_Validation()
+double AMF::evaluate_Against_URM_Validation()
 {
+	double result(0);
 
-	return 0;
+	for (uword ind = 0 ; ind < URM_Val_Location_Matrix_.n_cols ; ++ind)
+	{
+		uword i = URM_Val_Location_Matrix_(0,ind);
+		uword j = URM_Val_Location_Matrix_(1,ind);
+
+		double val = as_scalar(U_old_.row(i)*H_old_*V_old_.col(j) );
+		val = (val - URM_Val_Values_(ind));
+		result += val*val;
+	}
+
+	return sqrt(result);
 }
 
 void AMF::export_Results()
