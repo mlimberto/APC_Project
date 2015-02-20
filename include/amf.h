@@ -129,7 +129,10 @@ public :
     
     void solve_With_Log();
 
-    void solve_for_tuning(std::string mfilename);
+    void solve_For_Tuning(std::string mfilename);
+
+    void solve_For_Tuning_With_Log(std::string mfilename);
+
 
     // RECOMMENDATIONS
 

@@ -252,7 +252,7 @@ void AMF::solve_With_Log()
 
 }
 
-void AMF::solve_for_tuning(std::string mfilename)
+void AMF::solve_For_Tuning(std::string mfilename)
 {
 	// Load validation matrix 
 	#ifndef NDEBUG
@@ -266,7 +266,65 @@ void AMF::solve_for_tuning(std::string mfilename)
 
 	#ifndef NDEBUG
 	std::cout << "Validation matrix successfully loaded" << std::endl;
-	URM_Val_.print("URM validation matrix");
+	#endif	
+
+	// Run the solver
+	std::ofstream val_logfile;
+	val_logfile.open(amf_filename_prefix_+"log_validation.txt");
+	total_logfile_.open(amf_filename_prefix_+"log_iterations.txt");
+
+
+
+	for (unsigned int i=0 ; i<n_max_iter_ ; ++i)
+	{
+
+		std::cout << std::endl <<"##############" << std::endl << "Iteration " << i+1 << std::endl << "##############" << std::endl << std::endl ;
+
+		std::cout << "SOLVING FOR U ..." << std::endl;
+
+		solve_pg_U();
+
+		std::cout << "SOLVING FOR H ..." << std::endl;
+
+		solve_pg_H();
+
+		std::cout << "SOLVING FOR V ..." << std::endl;
+
+		solve_V_With_Log();
+
+		std::swap(U_,U_old_);
+		std::swap(H_,H_old_);
+		std::swap(V_,V_old_);
+		
+		double err_val = evaluate_Against_URM_Validation();
+		val_logfile << err_val << "\n";
+
+		#ifndef NDEBUG
+		std::cout << err_val << std::endl;
+		#endif
+
+	}
+
+	total_logfile_.close();
+	val_logfile.close();
+
+
+}
+
+void AMF::solve_For_Tuning_With_Log(std::string mfilename)
+{
+	// Load validation matrix 
+	#ifndef NDEBUG
+	std::cout << "Importing URM " << std::endl;
+	#endif
+
+	if (!import_Sparse_Matrix<double>(mfilename,URM_Val_,URM_Val_Location_Matrix_,URM_Val_Values_))
+	{
+		std::cout << "WARNING : Initialization of URM matrix from file didn't work properly" << std::endl;
+	}
+
+	#ifndef NDEBUG
+	std::cout << "Validation matrix successfully loaded" << std::endl;
 	#endif	
 
 	// Run the solver
@@ -313,7 +371,6 @@ void AMF::solve_for_tuning(std::string mfilename)
 
 
 }
-
 
 mat AMF::project_URM_Tr_by_column(uword j,const mat &S){
     mat m=S;
