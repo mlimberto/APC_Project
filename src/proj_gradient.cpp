@@ -16,47 +16,51 @@ using namespace arma;
 
 void AMF::solve_pg_U() // STILL WORK IN PROGRESS!!!!
 {
-	#ifndef NDEBUG
-	std::cout << "Solving projected gradient for U " << std::endl;
-	#endif
-	
-	// Initialize U (check what is best)
 	U_ = U_old_;
 
-	// Allocate and compute the temporary matrix A := H*V
+	mat A = H_old_*V_old_;
+	mat AAt = A*(A.t() );
 
-	mat A = H_old_*V_old_; 
-
-	// and the gradient matrix G
 	mat G(U_.n_rows,U_.n_cols,fill::zeros);
 
+	gradient_step_ = 1.0;
 
+	// Compute the linear part of the gradient
+	#ifndef NDEBUG
+	std::cout << "Computing linear part of gradient ... " ;
+	#endif
+
+	#ifdef AMFTIME 
+	auto begin = std::chrono::high_resolution_clock::now();
+	#endif
+
+	for (uword x =0 ; x< U_.n_rows ; ++x)
+		for (uword y = 0 ; y < U_.n_cols ; ++y)
+		{				
+			double ll = 0 ;
+
+			for (uword k = 0 ; k < A.n_cols ; ++k)
+				ll += build_S(x,k,URM_Tr_,U_old_,H_old_, V_old_) * A(y,k);
+
+			G(x,y) = - ll ; 
+		}
+
+	#ifdef AMFTIME
+	auto end = std::chrono::high_resolution_clock::now();
+	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;
+	#endif
 
 	// Run the loop
 
-	bool stop_criterion = false;
-
-	double prec_obj(0) , curr_obj(0);
-
-	for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n ) 
+	for (unsigned int n=0 ; n < n_max_iter_gradient_  ; ++n ) 
 	{
-		// #ifndef NDEBUG
-		// std::cout <<"Gradient method for U, iteration " << n << std::endl;
-		// #endif
-
-
-		// Perform the gradient step 
-		// solve_pg_U_One_Iteration(G,A);
-
-		// Evaluate stop criterion
-		prec_obj = curr_obj;
-		curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_);
-
-		if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
-			stop_criterion = true;
-
+		solve_pg_U_One_Iteration(G,A,AAt);
 	}
 
+	#ifndef NDEBUG
+	double obj = evaluate_Obj_Function(URM_Tr_,U_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_);
+	std::cout << "Objective function : " << obj << std::endl;
+	#endif
 
 }
 
@@ -198,41 +202,68 @@ void AMF::solve_pg_U_One_Iteration(mat G,const mat &A, const arma::mat &AAt)
 
 }
 
-void AMF::solve_pg_H(){
-    #ifndef NDEBUG
-    std::cout << "Solving projected gradient for H " << std::endl;
-    #endif
-
-    // Initialize H (with warm up)
+void AMF::solve_pg_H()
+{
     H_ = H_old_;
 
-    // Allocate and compute the temporary matrix A := H*V
-    // and the gradient matrix G
+    mat UtU = (U_.t())*U_;
+
+	#ifdef AMFTIME 
+	std::cout << "Computing V*Vt ... " ;
+	auto begin_VVt = std::chrono::high_resolution_clock::now();
+	#endif
+
+    mat VVt(V_old_.n_rows,V_old_.n_rows,fill::zeros);
+	for (uword i = 0 ; i < V_old_.n_rows ; ++i )
+		for (uword j = 0 ; j < V_old_.n_rows ; ++j )
+		{
+			for (uword k = 0 ; k < V_old_.n_cols ; ++k )
+				VVt(i,j) += V_old_(i,k)*V_old_(j,k);
+		}
+
+
+	#ifdef AMFTIME
+	auto end_VVt = std::chrono::high_resolution_clock::now();
+	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end_VVt-begin_VVt).count() << "ms" << std::endl;
+	#endif
+
+	gradient_step_ = 1.0;
+
     mat G(H_.n_rows,H_.n_cols,fill::zeros);
 
-    // Run the loop
+    #ifndef NDEBUG
+    std::cout << "Computing linear part of gradient ..." << std::endl;
+    #endif
 
-    bool stop_criterion = false;
+	#ifdef AMFTIME 
+	auto begin_LH = std::chrono::high_resolution_clock::now();
+	#endif
 
-    double prec_obj(0) , curr_obj(0);
-
-    for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n )
-    {
-
-
-
-        // Perform the gradient step
-        // solve_pg_H_One_Iteration(G);
-
-        // Evaluate stop criterion
-        prec_obj = curr_obj;
-        curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
-
-        // Added extra security measure to stop criterium
-        if (abs(prec_obj - curr_obj)/curr_obj < toll_gradient_)
-            stop_criterion = true;
-
+	for (uword k = 0 ; k < U_.n_rows ; ++k)
+ 	for (uword l = 0 ; l < V_old_.n_cols ; ++l)
+ 	{
+ 		double aux = build_S(k,l,URM_Tr_,U_old_,H_old_, V_old_);
+		for (uword x =0 ; x< H_.n_rows ; ++x)
+		for (uword y = 0 ; y < H_.n_cols ; ++y)
+ 				G(x,y) = G(x,y) - U_(k,x)*aux*V_old_(y,l) ;
+       	
     }
+
+    #ifdef AMFTIME
+	auto end_LH = std::chrono::high_resolution_clock::now();
+	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end_LH-begin_LH).count() << "ms" << std::endl;
+	#endif
+    
+    for (unsigned int n=0 ; n < n_max_iter_gradient_ ; ++n )
+    {
+        solve_pg_H_One_Iteration(G,UtU,VVt);
+    }
+
+    #ifndef NDEBUG
+    double obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
+    curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
+    #endif
+
 }
 
 void AMF::solve_pg_H_With_Log(){

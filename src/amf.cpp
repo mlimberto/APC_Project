@@ -270,6 +270,46 @@ void AMF::solve_for_tuning(std::string mfilename)
 	#endif	
 
 	// Run the solver
+	std::ofstream val_logfile;
+	val_logfile.open(amf_filename_prefix_+"log_validation.txt");
+	total_logfile_.open(amf_filename_prefix_+"log_iterations.txt");
+
+
+
+	for (unsigned int i=0 ; i<n_max_iter_ ; ++i)
+	{
+
+		std::cout << std::endl <<"##############" << std::endl << "Iteration " << i+1 << std::endl << "##############" << std::endl << std::endl ;
+
+		std::cout << "SOLVING FOR U ..." << std::endl;
+
+		solve_pg_U_With_Log();
+
+		std::cout << "SOLVING FOR H ..." << std::endl;
+
+		solve_pg_H_With_Log();
+
+		std::cout << "SOLVING FOR V ..." << std::endl;
+
+		solve_V_With_Log();
+
+		std::swap(U_,U_old_);
+		std::swap(H_,H_old_);
+		std::swap(V_,V_old_);
+
+		total_logfile_ << evaluate_Obj_Function(URM_Tr_,U_old_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_) << "\n" ;
+		
+		double err_val = evaluate_Against_URM_Validation();
+		val_logfile << err_val << "\n";
+
+		#ifndef NDEBUG
+		std::cout << err_val << std::endl;
+		#endif
+
+	}
+
+	total_logfile_.close();
+	val_logfile.close();
 
 
 }
