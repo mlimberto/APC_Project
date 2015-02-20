@@ -64,26 +64,26 @@ size(icm_sampling)
 
 %Suddivisione di urm_tuning_sampling in urm_tuning_tr e urm_tuning_val togliendo a caso il 10% degli elementi della matrice
 
-urm_tuning_tr = urm_sampling
-vec = find(urm_tuning_tr);
+urm_bin_tuning_tr = urm_sampling
+vec = find(urm_bin_tuning_tr);
 f = 0.1; % desired fraction
 n = round(f*length(vec));
 vec_change = randsample(vec,n);
-urm_tuning_tr(vec_change) = 0;
-urm_tuning_val=urm_sampling-urm_tuning_tr;
+urm_bin_tuning_tr(vec_change) = 0;
+urm_bin_tuning_val=urm_sampling-urm_bin_tuning_tr;
 
 
 %% Esportiamo URM_tuning_tr
 
-[ru,cu,vu] = find(urm_tuning_tr);
-fileID_urm_tr=fopen('urm_tuning_tr.txt','wt');
+[ru,cu,vu] = find(urm_bin_tuning_tr);
+fileID_urm_tr=fopen('urm_bin_tuning_tr.txt','wt');
 fprintf(fileID_urm_tr,'%d %d %f\n',[ru-1,cu-1,vu]');
 fclose(fileID_urm_tr);
 
 %% Esportiamo URM_tuning_val
 
-[ru,cu,vu] = find(urm_tuning_val);
-fileID_urm_test=fopen('urm_tuning_val.txt','wt');
+[ru,cu,vu] = find(urm_bin_tuning_val);
+fileID_urm_test=fopen('urm_bin_tuning_val.txt','wt');
 fprintf(fileID_urm_test,'%d %d %f\n',[ru-1,cu-1,vu]');
 fclose(fileID_urm_test);
 
