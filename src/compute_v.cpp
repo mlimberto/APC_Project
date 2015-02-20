@@ -79,6 +79,12 @@ void AMF::solve_V_With_Log()
 
     double prec_obj(0) , curr_obj(0);
 
+    curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
+
+    #ifndef NDEBUG
+    std::cout << "Evaluating first objective function : " << curr_obj << std::endl;
+    #endif
+
     for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n ) 
     {
         prec_obj = curr_obj;
@@ -120,11 +126,15 @@ void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, const double p
     curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_temp,U_old_,H_old_,V_old_,lambda_);
 
     //Check if the object function increases
-    if (curr_obj>prec_obj){
+    if (curr_obj < prec_obj){
         // Update V
-        V_=V_temp;
-        is_feasible=true;
-    }else{
+        // V_=V_temp;
+        // is_feasible=true;
+        std::cout << gradient_step_ << " is feasible, increasing gradient step" << std::endl;
+        gradient_step_ = gradient_step_/0.1;
+    }
+    else{
+        std::cout << gradient_step_ << " not feasible, Decreasing gradient step" << std::endl;
         gradient_step_ = gradient_step_ *0.1;
     }
 
@@ -136,13 +146,20 @@ void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, const double p
 
         curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_temp,U_old_,H_old_,V_old_,lambda_);
 
-        if (curr_obj>prec_obj){
+        if (curr_obj < prec_obj){
             // Update V
             V_=V_temp;
             is_feasible=true;
+            std::cout << gradient_step_ << " is feasible" << std::endl;
+
         }else{
+            std::cout <<gradient_step_ << "not feasible, Decreasing gradient step" << std::endl;
             gradient_step_ = gradient_step_ *0.1;
         }
+
+        if (gradient_step_ < 1e-10)
+            break;
+
     }
 
 }     

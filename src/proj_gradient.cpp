@@ -261,7 +261,7 @@ void AMF::solve_pg_H()
 
     #ifndef NDEBUG
     double obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
-    curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
+    std::cout << "Objective function : " << obj << std::endl;
     #endif
 
 }
