@@ -92,7 +92,7 @@ class AMF
 
         void solve_V_With_Log();
 
-        void solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, double prec_obj);   
+        void solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, const double prec_obj,double &curr_obj);
 
         void project_V(arma::sp_mat &V_new ,arma::mat &V_hat);    
 

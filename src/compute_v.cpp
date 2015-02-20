@@ -50,7 +50,7 @@ void AMF::solve_V_With_Log()
 
     mat G(V_.n_rows,V_.n_cols,fill::zeros);
 
-    gradient_step_ = 1e-6;
+    gradient_step_ = 1e-4;
 
     // Compute the linear part of the gradient
     #ifndef NDEBUG
@@ -81,11 +81,10 @@ void AMF::solve_V_With_Log()
 
     for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n ) 
     {
-        solve_V_One_Iteration(G,WtW,curr_obj);
+        prec_obj = curr_obj;
+        solve_V_One_Iteration(G,WtW,prec_obj,curr_obj);
 
         // Evaluate stop criterion
-        prec_obj = curr_obj;
-        curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_,U_old_,H_old_,V_old_,lambda_);
 
         if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
             stop_criterion = true;
@@ -108,14 +107,43 @@ void AMF::solve_V_With_Log()
 
 }
 
-void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, double prec_obj)
+void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, const double prec_obj,double &curr_obj)
 {
     // Update gradient with quadratic part
     G += WtW*V_;
 
-    // Update V
+    bool is_feasible = false;
     mat V_hat = V_ - gradient_step_*G ;
-    project_V(V_,V_hat);
+    sp_mat V_temp=V_;
+    project_V(V_temp,V_hat);
+
+    curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_temp,U_old_,H_old_,V_old_,lambda_);
+
+    //Check if the object function increases
+    if (curr_obj>prec_obj){
+        // Update V
+        V_=V_temp;
+        is_feasible=true;
+    }else{
+        gradient_step_ = gradient_step_ *0.1;
+    }
+
+
+    while(!is_feasible){
+        V_hat = V_ - gradient_step_*G ;
+        V_temp=V_;
+        project_V(V_temp,V_hat);
+
+        curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_temp,U_old_,H_old_,V_old_,lambda_);
+
+        if (curr_obj>prec_obj){
+            // Update V
+            V_=V_temp;
+            is_feasible=true;
+        }else{
+            gradient_step_ = gradient_step_ *0.1;
+        }
+    }
 
 }     
 
