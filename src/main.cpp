@@ -1,6 +1,7 @@
 //
 //  main.cpp
 //
+//  Authors : Lara Bombardieri, Andrea Brandoli, Matteo Limberto
 
 
 #include <iostream>

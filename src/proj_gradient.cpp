@@ -3,7 +3,7 @@
 //  
 //
 //
-//
+//  Authors : Lara Bombardieri, Andrea Brandoli, Matteo Limberto
 
 #include "amf.h"
 

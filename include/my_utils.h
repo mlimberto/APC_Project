@@ -1,7 +1,10 @@
 //
 //  my_utils.h  
 //
-//  Public functions that all classes can use
+//  Authors : Lara Bombardieri, Andrea Brandoli, Matteo Limberto
+//
+//  Useful functions that are not class specific
+
 
 
 #ifndef UTILS_H

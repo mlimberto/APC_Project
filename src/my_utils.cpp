@@ -3,7 +3,7 @@
 //  
 //
 //
-//
+//  Authors : Lara Bombardieri, Andrea Brandoli, Matteo Limberto
 
 #include "my_utils.h"
 

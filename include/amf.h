@@ -1,7 +1,7 @@
 //
 //  amf.h
 //  
-//
+//  Authors : Lara Bombardieri, Andrea Brandoli, Matteo Limberto
 
 #ifndef ____amf__
 #define ____amf__
@@ -170,6 +170,8 @@ public :
     // EXPORT TO FILE METHODS
 
     void export_Results();
+
+    void import_Results();
 
 };
 

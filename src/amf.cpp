@@ -2,8 +2,7 @@
 //  amf.cpp
 //  
 //
-//
-//
+//  Authors : Lara Bombardieri, Andrea Brandoli, Matteo Limberto
 
 #include "amf.h"
 
@@ -454,6 +453,16 @@ void AMF::export_Results()
 
 }
 
+void AMF::import_Results()
+{
+
+	U_old_.load(amf_filename_prefix_+"U");
+
+	H_old_.load(amf_filename_prefix_+"H");
+
+	V_old_.load(amf_filename_prefix_+"V");
+
+}
 
 
 
