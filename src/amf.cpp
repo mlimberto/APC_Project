@@ -14,7 +14,7 @@ using namespace arma;
 
 // Most basic constructor
 AMF::AMF() :
-lambda_(0),n_max_iter_(100),toll_(0.001)
+lambda_(0),n_max_iter_(100)
 {
 	amf_filename_prefix_ = "";
 	std::cout << "WARNING : The default constructor has been called, so your instance is still basically empty." << std::endl;
@@ -100,11 +100,9 @@ bool AMF::initialize_Parameters(std::string filename)
 	static std::map<std::string,unsigned int> options_map; 
 	options_map["LAMBDA"] = 0;
 	options_map["N_MAX_ITER"] = 1;
-	options_map["TOLL"] = 2;
 	options_map["N_LATENT_FACTORS"] = 3;
 	options_map["N_MAX_ITER_GRADIENT"] = 4;
 	options_map["TOLL_GRADIENT"] = 5;
-	options_map["GRADIENT_STEP"] = 6;
 
 
 
@@ -141,10 +139,6 @@ bool AMF::initialize_Parameters(std::string filename)
 			set_n_max_iter(n_max_iter) ;
 			break;
 
-			case 2: 
-			double toll ; param_file >> toll ; set_toll(toll);
-			break;
-
 			case 3:
 			unsigned int n_lf ; param_file >> n_lf ; 
 			set_n_latent_factors(n_lf);
@@ -157,10 +151,6 @@ bool AMF::initialize_Parameters(std::string filename)
 
 			case 5: 
 			double toll_g ; param_file >> toll_g ; set_toll_gradient(toll_g);
-			break;
-
-			case 6: 
-			double g_step ; param_file >> g_step ; set_gradient_step(g_step);
 			break;
 
 			default : 
