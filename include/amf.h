@@ -39,7 +39,6 @@ class AMF
         double lambda_ ; // Over-fitting parameter
 
         unsigned int n_max_iter_ ; // maximum number of iterations
-        double toll_ ; // Stop criterium 
 
         unsigned int n_max_iter_gradient_ ; // Same as above for the projected gradient method
         double toll_gradient_;
@@ -114,6 +113,7 @@ public :
     friend bool test_project_ICM();
     friend bool test_check_method2();
     friend bool test_validation(AMF & amf);
+    friend bool test_top_N(AMF & amf);
 
     // CONSTRUCTORS and INITIALIZERS
     
@@ -143,17 +143,14 @@ public :
 
     inline void set_lambda(double lambda) { lambda_ = lambda; }
     inline void set_n_max_iter(unsigned int n) { n_max_iter_ = n; }
-    inline void set_toll(double toll) { toll_ = toll; }
     inline void set_n_latent_factors(arma::uword r) { r_ = r; }
     inline void set_n_max_iter_gradient(unsigned int n) { n_max_iter_gradient_ = n; }
     inline void set_toll_gradient(double toll) { toll_gradient_ = toll; }
-    inline void set_gradient_step(double g_step) { gradient_step_ = g_step; }
     
     // GET METHODS
 
     inline double get_lambda() { return lambda_; }
     inline unsigned int get_n_max_iter() { return n_max_iter_; }
-    inline double get_toll() { return toll_; }
     inline arma::uword get_n_latent_factors() { return r_; }
     inline unsigned int get_n_max_iter_gradient() { return n_max_iter_gradient_; }
     inline double get_toll_gradient() { return toll_gradient_; }

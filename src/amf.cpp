@@ -394,7 +394,7 @@ umat AMF::get_TopN_Recommendation(uword N)
 		{
 			if (URM_Tr_(i,j) == 0 )
 			{
-				v(j) = as_scalar(U_.row(i)*H_*V_.col(j));
+				v(j) = as_scalar(U_old_.row(i)*H_old_*V_old_.col(j));
 			}
 		}
 
@@ -410,7 +410,6 @@ umat AMF::get_TopN_Recommendation(uword N)
 
 		REC.row(i) = indexes;
 	}
-
 
 	return REC;
 }
