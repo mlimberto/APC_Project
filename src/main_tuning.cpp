@@ -1,5 +1,5 @@
 //
-//  main.cpp
+//  main_tuning.cpp
 //
 //  Authors : Lara Bombardieri, Andrea Brandoli, Matteo Limberto
 
@@ -14,10 +14,10 @@
 
 int main(int argc,char** argv)
 {
-	if (argc < 3)
+	if (argc < 4)
 	{
 		std::cout << std::endl << "How to execute this program : \n" << std::endl
-		<< "./name_executable <path_to_URM_Training> <path_to_ICM> <path_to_param_file>"
+		<< "./name_executable <path_to_URM_Training> <path_to_ICM> <path_to_param_file> <path_to_urm_validation>"
 		<< "\n\n\n" ;
 		return 0;
 	}
@@ -28,11 +28,18 @@ int main(int argc,char** argv)
 
 	// Solve
 
-	amf.solve_With_Log();
+	amf.solve_For_Tuning_With_Log(argv[4]);
+
 
 	// Export results
 
-	amf.export_Results();
+	// amf.export_Results();
+
+
+
+
+
+
 
 
 	return 0;

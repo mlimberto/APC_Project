@@ -279,7 +279,7 @@ void AMF::solve_For_Tuning(std::string mfilename)
 
 		std::cout << "SOLVING FOR V ..." << std::endl;
 
-		solve_V_With_Log();
+		solve_V();
 
 		std::swap(U_,U_old_);
 		std::swap(H_,H_old_);
@@ -288,8 +288,12 @@ void AMF::solve_For_Tuning(std::string mfilename)
 		double err_val = evaluate_Against_URM_Validation();
 		val_logfile << err_val << "\n";
 
+		double obj_fun = evaluate_Obj_Function(URM_Tr_,U_old_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_) ;
+		total_logfile_ << obj_fun << "\n" ;
+
 		#ifndef NDEBUG
-		std::cout << err_val << std::endl;
+		std::cout << "Objective function : " << obj_fun << std::endl; 
+		std::cout << "RMSE Validation : " << err_val << std::endl;
 		#endif
 
 	}

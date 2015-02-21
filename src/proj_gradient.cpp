@@ -381,7 +381,7 @@ void AMF::solve_pg_H_One_Iteration(mat G,const mat &UtU, const mat &VVt){
 
 	#ifndef NDEBUG
 	std::cout << "Step = " << gradient_step_ << " Value = " << res << " ";
-	std::cout <<( (res <= 0)?("First is feasible so I increase the step"):("Fist is not feasible") )<< std::endl;
+	std::cout <<( (res <= 0)?("First is feasible so I increase the step"):("First is not feasible") )<< std::endl;
 	#endif
 
 	if (res <=0)

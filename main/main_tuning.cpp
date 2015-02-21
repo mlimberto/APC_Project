@@ -14,7 +14,9 @@
 
 int main(int argc,char** argv)
 {
-	if (argc < 4)
+	std::cout << argc << std::endl;
+
+	if (argc < 5)
 	{
 		std::cout << std::endl << "How to execute this program : \n" << std::endl
 		<< "./name_executable <path_to_URM_Training> <path_to_ICM> <path_to_param_file> <path_to_urm_validation>"
@@ -28,13 +30,11 @@ int main(int argc,char** argv)
 
 	// Solve
 
-	amf.solve_for_tuning(argv[4]);
-
+	amf.solve_For_Tuning(argv[4]);
 
 	// Export results
 
-	// amf.export_Results();
-
+	amf.export_Results();
 
 
 

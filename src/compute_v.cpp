@@ -14,13 +14,78 @@ using namespace arma;
 //////////////////////////
 
 
-void AMF::solve_V(){
+void AMF::solve_V()
+{
 
-    // Computation of V
+    V_ = V_old_;
+
     #ifndef NDEBUG
-    std::cout << "Computing V " << std::endl;
+    std::cout << "Computing W = UH ..." << std::endl;
     #endif
-    sp_mat V_hat=solve_V_One_Step_Gradient(V_old_);
+
+    mat W = U_*H_;
+    
+    #ifndef NDEBUG
+    std::cout << "Computing WtW" << std::endl;
+    #endif
+
+    mat WtW = (W.t())*W;
+
+    mat G(V_.n_rows,V_.n_cols,fill::zeros);
+
+    gradient_step_ = 1e-4;
+
+    // Compute the linear part of the gradient
+    #ifndef NDEBUG
+    std::cout << "Computing linear part of gradient..." << std::endl;
+    #endif
+
+    #ifdef AMFTIME 
+    auto begin_LV = std::chrono::high_resolution_clock::now();
+    #endif
+
+    for (uword x = 0; x < G.n_rows ; ++x)
+        for (uword y = 0; y < G.n_cols ; ++y)
+        {
+            for (uword k=0 ; k< W.n_rows ; ++k)
+                G(x,y) = G(x,y) - W(k,x)*build_S(k,y,URM_Tr_,U_old_,H_old_, V_old_);
+        }
+
+    #ifdef AMFTIME
+    auto end_LV = std::chrono::high_resolution_clock::now();
+    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end_LV-begin_LV).count() << "ms" << std::endl;
+    #endif
+
+    // Run the loop
+
+    bool stop_criterion = false;
+
+    double prec_obj(0) , curr_obj(0);
+
+    curr_obj = evaluate_Obj_Function(URM_Tr_,U_,H_,V_old_,U_old_,H_old_,V_old_,lambda_);
+
+    #ifndef NDEBUG
+    std::cout << "Evaluating first objective function : " << curr_obj << std::endl;
+    #endif
+
+    for (unsigned int n=0 ; (n < n_max_iter_gradient_ ) && (!stop_criterion) ; ++n ) 
+    {
+        prec_obj = curr_obj;
+        solve_V_One_Iteration(G,WtW,prec_obj,curr_obj);
+
+        // Evaluate stop criterion
+
+        if (abs(curr_obj - prec_obj)/curr_obj < toll_gradient_)
+            stop_criterion = true;
+
+        #ifndef NDEBUG
+        std::cout << "old_obj " << prec_obj << " new_obj" << curr_obj << std::endl;
+        #endif
+
+        // Print information
+        std::cout << "Iteration " << n+1 << " : Objective function = " << curr_obj << std::endl;
+
+    }
 
 }
 
