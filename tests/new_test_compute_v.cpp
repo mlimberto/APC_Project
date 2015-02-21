@@ -65,7 +65,8 @@ bool test_PG_V(AMF & amf )
 
     // Run the test
 
-    amf.solve_V_With_Log();
+    // amf.solve_V_With_Log();
+    amf.solve_V();
 
     amf.V_.print("V matrix");
 
@@ -89,11 +90,9 @@ int main(int argc,char** argv)
     //amf.initialize_Parameters("test_parameters.txt") ;
     amf.set_lambda(1.0);
     amf.set_n_max_iter(10);
-    amf.set_toll(1e-3);
     amf.set_n_latent_factors(50);
-    amf.set_n_max_iter_gradient(1000);
+    amf.set_n_max_iter_gradient(1);
     amf.set_toll_gradient(1e-5);
-    amf.set_gradient_step(0.01);
 
     cout << ((test_PG_V(amf))? "Success " : "Failed" ) << endl;
 

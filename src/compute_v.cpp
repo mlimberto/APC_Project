@@ -44,12 +44,17 @@ void AMF::solve_V()
     auto begin_LV = std::chrono::high_resolution_clock::now();
     #endif
 
-    for (uword x = 0; x < G.n_rows ; ++x)
-        for (uword y = 0; y < G.n_cols ; ++y)
+    for (uword y = 0; y < G.n_cols ; ++y)
+    {
+        for (uword k=0 ; k< W.n_rows ; ++k)
         {
-            for (uword k=0 ; k< W.n_rows ; ++k)
-                G(x,y) = G(x,y) - W(k,x)*build_S(k,y,URM_Tr_,U_old_,H_old_, V_old_);
+            double aux = build_S(k,y,URM_Tr_,U_old_,H_old_, V_old_);
+            for (uword x = 0; x < G.n_rows ; ++x)
+            {
+                G(x,y) = G(x,y) - W(k,x)*aux;
+            }
         }
+    }
 
     #ifdef AMFTIME
     auto end_LV = std::chrono::high_resolution_clock::now();
@@ -126,12 +131,17 @@ void AMF::solve_V_With_Log()
     auto begin_LV = std::chrono::high_resolution_clock::now();
     #endif
 
-    for (uword x = 0; x < G.n_rows ; ++x)
-        for (uword y = 0; y < G.n_cols ; ++y)
+    for (uword y = 0; y < G.n_cols ; ++y)
+    {
+        for (uword k=0 ; k< W.n_rows ; ++k)
         {
-            for (uword k=0 ; k< W.n_rows ; ++k)
-                G(x,y) = G(x,y) - W(k,x)*build_S(k,y,URM_Tr_,U_old_,H_old_, V_old_);
+            double aux = build_S(k,y,URM_Tr_,U_old_,H_old_, V_old_);
+            for (uword x = 0; x < G.n_rows ; ++x)
+            {
+                G(x,y) = G(x,y) - W(k,x)*aux;
+            }
         }
+    }
 
     #ifdef AMFTIME
     auto end_LV = std::chrono::high_resolution_clock::now();
