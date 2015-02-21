@@ -23,5 +23,5 @@ add_executable(amf_out src/my_utils.cpp
 				   src/compute_v.cpp
 				   src/proj_gradient.cpp 
 				   src/amf.cpp
-				   src/main.cpp
+				   main/main.cpp
 				   )
