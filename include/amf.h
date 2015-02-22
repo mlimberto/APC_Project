@@ -95,25 +95,11 @@ class AMF
 
         void project_V(arma::sp_mat &V_new ,arma::mat &V_hat);    
 
-        arma::sp_mat solve_V_One_Step_Gradient(const arma::sp_mat &V_0);
-        arma::sp_mat solve_V_One_Step_Gradient2(const arma::sp_mat &V_0);
         arma::sp_mat project_ICM(const arma::mat &G);
-        arma::mat project_URM_Tr_by_column(arma::uword j, const arma::mat &S);
-
-        void orthogonal_projection(arma::sp_mat &G);
 
         double evaluate_Against_URM_Validation();
     
 public :
-
-    friend bool test_PG_U(AMF & amf); // For testing purposes
-    friend bool test_PG_H(AMF & amf );
-    friend bool test_PG_V(AMF & amf );
-    friend bool test_orthogonal_projection();
-    friend bool test_project_ICM();
-    friend bool test_check_method2();
-    friend bool test_validation(AMF & amf);
-    friend bool test_top_N(AMF & amf);
 
     // CONSTRUCTORS and INITIALIZERS
     

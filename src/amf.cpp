@@ -389,22 +389,6 @@ void AMF::solve_For_Tuning_With_Log(std::string mfilename)
 
 }
 
-mat AMF::project_URM_Tr_by_column(uword j,const mat &S){
-    mat m=S;
-    if (S.n_rows != URM_Tr_.n_rows){
-        std::cerr << "ERROR in project_URM_Tr_by_column : Inconsistent matrices !!!" << std::endl;
-    }else if(S.n_cols != 1){
-        std::cerr << "ERROR in project_URM_Tr_by_column : You have to pass a column !!!" << std::endl;
-
-    }else{
-        uvec q1=get_Vector_Of_Indices(URM_Tr_Location_Matrix_);
-        uvec q2=find(q1>=URM_Tr_.n_rows*j && q1<URM_Tr_.n_rows*(j+1));
-        m.elem(q1(q2)-URM_Tr_.n_rows*j)=URM_Tr_Values_(q2);
-
-
-    }
-    return m;
-}
 
 umat AMF::get_TopN_Recommendation(uword N,bool export_to_file)
 {
