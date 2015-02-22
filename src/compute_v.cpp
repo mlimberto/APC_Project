@@ -205,11 +205,15 @@ void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, const double p
         // Update V
         // V_=V_temp;
         // is_feasible=true;
+        #ifndef NDEBUG
         std::cout << gradient_step_ << " is feasible, increasing gradient step" << std::endl;
+        #endif
         gradient_step_ = gradient_step_/0.1;
     }
     else{
+        #ifndef NDEBUG
         std::cout << gradient_step_ << " not feasible, Decreasing gradient step" << std::endl;
+        #endif
         gradient_step_ = gradient_step_ *0.1;
     }
 
@@ -225,10 +229,14 @@ void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, const double p
             // Update V
             V_=V_temp;
             is_feasible=true;
+            #ifndef NDEBUG
             std::cout << gradient_step_ << " is feasible" << std::endl;
+            #endif
 
         }else{
+            #ifndef NDEBUG
             std::cout <<gradient_step_ << "not feasible, Decreasing gradient step" << std::endl;
+            #endif
             gradient_step_ = gradient_step_ *0.1;
         }
 

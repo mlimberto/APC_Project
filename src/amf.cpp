@@ -42,18 +42,14 @@ AMF::AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string para
 		std::cout << "WARNING : Initialization of parameters from file didn't work properly" << std::endl;
 	}
 
-	#ifndef NDEBUG
 	std::cout << "Importing URM " << std::endl;
-	#endif
 
 	if (!import_Sparse_Matrix<double>(URM_Tr_filename,URM_Tr_,URM_Tr_Location_Matrix_,URM_Tr_Values_))
 	{
 		std::cout << "WARNING : Initialization of URM matrix from file didn't work properly" << std::endl;
 	}
 
-	#ifndef NDEBUG
 	std::cout << "Importing ICM " << std::endl;
-	#endif
 
 	if (!import_Sparse_Matrix<unsigned int>(ICM_filename,ICM_,ICM_Location_Matrix_,ICM_Values_))
 	{
@@ -291,10 +287,19 @@ void AMF::solve_For_Tuning(std::string mfilename)
 		double obj_fun = evaluate_Obj_Function(URM_Tr_,U_old_,H_old_,V_old_,U_old_,H_old_,V_old_,lambda_) ;
 		total_logfile_ << obj_fun << "\n" ;
 
-		#ifndef NDEBUG
 		std::cout << "Objective function : " << obj_fun << std::endl; 
 		std::cout << "RMSE Validation : " << err_val << std::endl;
-		#endif
+
+		// Backup matrices for safety 
+
+		if (i == 0 | i == 10 || i == 20 | i == 30)
+		{
+			U_old_.save(amf_filename_prefix_+"U"+std::to_string(i));
+
+			H_old_.save(amf_filename_prefix_+"H"+std::to_string(i));
+
+			V_old_.save(amf_filename_prefix_+"V"+std::to_string(i));
+		}
 
 	}
 
@@ -431,6 +436,8 @@ double AMF::evaluate_Against_URM_Validation()
 		val = (val - URM_Val_Values_(ind));
 		result += val*val;
 	}
+
+	result = result / URM_Val_Location_Matrix_.n_cols ;
 
 	return sqrt(result);
 }
