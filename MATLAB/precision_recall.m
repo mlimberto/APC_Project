@@ -2,7 +2,7 @@
 
 cd ../dataset/Dataset_bin_for_Tuning/
 
-top_N = importdata('recommendations.txt')
+top_N = importdata('top_N.txt')
 
 [U N] = size(top_N);
 
