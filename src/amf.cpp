@@ -311,7 +311,7 @@ void AMF::solve_For_Tuning(std::string mfilename)
 
 		// Backup matrices for safety 
 
-		if (i == 0 | i == 10 || i == 20 | i == 30)
+		if (i == 0 || i == 10 || i == 20 || i == 30)
 		{
 			U_old_.save(amf_filename_prefix_+"U"+std::to_string(i));
 
