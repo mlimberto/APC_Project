@@ -1,0 +1,255 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[paper=a4, fontsize=12pt]{scrartcl} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[utf8]{inputenc} 
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{url}
+
+\usepackage[pdftex]{graphicx}
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{ \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\usepackage{subfigure}
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+%----------------------------------------------------------------------------------------
+%	CODE STUFF
+%----------------------------------------------------------------------------------------
+
+\lstset{frame=tb,
+  language=C++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{Algorithms and Parallel Computing} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge Augmented Matrix Factorization with Explicit Labels for Recommender Systems \\[0.7 cm] % The assignment title
+\normalsize \textsc{Code Documentation}
+\horrule{0.5pt} \\[0.1cm] % Thick bottom horizontal rule
+}
+
+\author{\normalsize Lara Bombardieri \hspace{1 cm} Andrea Brandoli \hspace{1 cm} Matteo Limberto} % Your name
+
+\date{} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+
+\section{Introduction}
+
+This document provides a brief guide to compile and run the source code implementing the recommendation algorithm denominated \emph{Augmented Matrix Factorization with Explicit Labels for Recommender Systems}. This code has been developed by our group in the framework of the \emph{Algorithms and Parallel Computing} class held by Professor Cremonesi at Politecnico di Milano. The paper describing the aforementioned algorithm was provided to us.
+
+\section{Compilation}
+
+A compiler supporting the \textsc{C++11} standard is required in order to compile the source code. We used the latest versions of the \texttt{g++} and \texttt{clang++} compilers.
+
+\subsection{External libraries}
+
+The code is built upon the \textsc{Armadillo} library (\texttt{http://arma.sourceforge.net}) which is used to manage matrices and linear-algebra operations. This library is in turn built upon the \textsc{BLAS} and \textsc{LAPACK} linear-algebra libraries. These three libraries must be installed before the compilation of the project is initiated.
+
+\subsection{Compilation using \emph{CMake} }
+
+We used the \emph{CMake} tool in order to generate the \emph{MakeFile} for our code and the  \emph{CMakeLists.txt} is provided in the code folder. This was particularly useful since in our team we were not using the same platform. \\ 
+
+To compile, just type 
+\begin{equation*}
+\texttt{cmake <path-to-folder-containing-CMakeLists>}
+\end{equation*}
+and then 
+\begin{equation*}
+\texttt{make}
+\end{equation*}
+
+We recommend not to compile in the same folder where the source code is located. 
+
+\subsection{Manual compilation}
+
+Compilation can also be performed manually. In this case the following order of dependency shall be respected during the process :
+\begin{itemize}
+\item[-] \texttt{my\_utils.cpp}
+\item[-] \texttt{compute\_v.cpp} \, \, \, \texttt{proj\_gradient.cpp} \, \, \, \texttt{amf.cpp}
+\item[-] \texttt{main.cpp}
+
+\end{itemize}
+
+\subsection{Other settings}
+
+By default a lot of print-outs are visualised on screen so that the execution can be closely followed by the user. The output can be heavily reduced by defining the \texttt{NDEBUG} preprocessor macro at compile time. To do so, just add the \texttt{-DNDEBUG} compiler flag. \\
+
+By defining the \texttt{AMFTIME} preprocessor macro (with the same procedure as above) the time elapsed during the execution of some time-wise critical tasks is tracked. \\
+
+By defining the \texttt{AMFOPENMP} preprocessor macro parallelisation within the \emph{OpenMP} framework is enabled. The operations which are time-wise most critical have been parallelised so that execution speed is drastically increased. Please, remember to set the number of threads you wish to use via the \texttt{OMP\_NUM\_THREADS} environment variable before running the executable. \\
+
+An additional increase in speed can be obtained by using parallelized versions of the \emph{BLAS} library, although we didn't experiment this solution.
+
+\section{Execution}
+
+The main task performed by our code is to solve the minimisation problem described in the paper that was given to us. The final output consists of three matrices  (namely $U$, $H$, $V$) that allow us to perform recommendation. \\
+
+In particular, the rating given to item $j$ from user $i$ is predicted as 
+\begin{equation*}
+R = (UHV)_{ij} 
+\end{equation*}
+
+\subsection{Input matrices and parameters}
+
+We must give as an input to the executable the user-rating matrix and the item-content matrix. The format in which they must be given is a text file where each row contains two integer indexes (row and column index) and a value corresponding to these indexes. These three values are separated by a whitespace. \\
+
+In the \texttt{MATLAB} sub-folder a script which extracts a suitable input file from a \texttt{.mat} matrix file is provided. \\
+
+The parameters are stored in the \texttt{parameters.txt} file which can be modified by the user. This file is then given as an input to the solver. \\
+
+\subsection{Running the solver} 
+
+To perform recommendation  we need to solve a complex optimisation problem. This is done in the \texttt{main\_solve.cpp} main file. \\
+
+The program creates an instance of the solver class, imports the user-rating and item-content matrices along with the parameters and eventually runs the optimisation procedure. The resulting matrices are then exported using the \textsc{Armadillo} binary file format. \\
+
+Once the code compiled, to run the solver just type 
+\begin{equation*}
+\texttt{./amf\_out <path-to-URM-matrix> <path-to-ICM-matrix> <path-to-parameters-file>}
+\end{equation*} 
+
+The results we're looking for are then exported according to the following filename  
+\begin{equation*}
+\texttt{amf\_<n-latent-factors>\_<lambda>\_<name-matrix>}
+\end{equation*} 
+
+where \texttt{n-latent-factors} and \texttt{lambda} are set in the parameters file.
+
+\subsection{Tuning the solver} 
+Since the optimal parameters are unknown to the user, a tuning procedure has been implemented so that they can be easily identified. This is done in the \texttt{main\_tuning.cpp} main file.\\
+
+An additional validation user-rating matrix is given as an input to the solver. At every iteration, predictions of the ratings are evaluated for the elements of the validation URM and the goodness of the estimations is evaluated via \emph{RMSE} (root mean-square error). These values are then stored on a log-file. \\ 
+
+The path to the validation user-rating matrix must be added as an input to the executable.
+
+\subsection{Getting Top-N recommendations}
+
+In order to evaluate the goodness of the recommendation system, \emph{Top N} predictions must be computed for every user once the solving procedure is completed. This is done in the \texttt{main\_get\_topN.cpp} main file. \\
+
+The results from the solving procedure are loaded in memory and then the matrix containing the \emph{Top N} recommendations for every user is computed and, optionally, exported in a \texttt{.txt} file. \\
+
+The executable must be run as in the solving procedure. Once this has been done, \emph{precision} and \emph{recall} can be evaluated by running the script provided in the \texttt{MATLAB} sub-folder.  
+
+\section{Description of the AMF class}
+
+The core of the code is encapsulated into a class denominated AMF, which stores the matrices as attributes and contains all the methods needed to solve the optimisation problem, which eventually consists of solving three convex optimisation subproblems via projected-gradient methods.
+
+\subsection{Constructors}
+\begin{lstlisting}
+AMF();
+
+AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string param_filename);
+\end{lstlisting}
+\vspace{0.5 cm}
+Two constructors have been implemented, the first one being the default constructor (which creates a basically empty instance). The latter instead requires as parameters the paths to the user-rating matrix, item-content matrix and parameters file respectively.
+
+\subsection{Public methods : solvers}
+\begin{lstlisting}
+void solve();
+    
+void solve_With_Log();
+
+void solve_For_Tuning(std::string mfilename);
+
+void solve_For_Tuning_With_Log(std::string mfilename);
+
+arma::umat get_TopN_Recommendation(arma::uword N, bool export_to_file = true);
+
+\end{lstlisting}
+\vspace{0.5 cm}
+The first two methods of the above list solve the optimisation problem and compute the resulting matrices ($U$, $H$, $V$) needed to perform recommendation. The \texttt{solve\_With\_Log()} method evaluates the objective function at every gradient sub-iteration, hence it is significantly slower than the first one but allows for detailed tracking of the objective function. \\
+
+The \texttt{solve\_For\_Tuning()} method additionally evaluates the error with respect to a validation matrix, as explained in section 3. \\
+
+The last method extracts a matrix containing \emph{Top N} recommendations for every user.
+
+\subsection{Public methods : input / output}
+\begin{lstlisting}
+inline void set_lambda(double lambda) { lambda_ = lambda; }
+inline void set_n_max_iter(unsigned int n) { n_max_iter_ = n; }
+inline void set_n_latent_factors(arma::uword r) { r_ = r; }
+inline void set_n_max_iter_gradient(unsigned int n) { n_max_iter_gradient_=n;}
+inline void set_toll_gradient(double toll) { toll_gradient_ = toll; }
+inline double get_lambda() { return lambda_; }
+inline unsigned int get_n_max_iter() { return n_max_iter_; }
+inline arma::uword get_n_latent_factors() { return r_; }
+inline unsigned int get_n_max_iter_gradient() { return n_max_iter_gradient_; }
+inline double get_toll_gradient() { return toll_gradient_; }
+inline double get_gradient_step() { return gradient_step_; }
+inline void print_ICM(){ICM_.print("ICM =");}
+inline void print_URM_Tr(){URM_Tr_.print("URM =");}
+void export_Results();
+void import_Results();
+\end{lstlisting}
+\vspace{0.5 cm}
+Most of these methods are quite self-explanatory. We wish to draw your attention to the last two methods of the list, which respectively export and import the $U$, $H$, $V$ matrices in \emph{ARMA} binary file format.
+
+\end{document}
