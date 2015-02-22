@@ -44,6 +44,9 @@ void AMF::solve_V()
     auto begin_LV = std::chrono::high_resolution_clock::now();
     #endif
 
+    #ifdef AMFOPENMP
+    #pragma omp parallel for 
+    #endif
     for (uword y = 0; y < G.n_cols ; ++y)
     {
         for (uword k=0 ; k< W.n_rows ; ++k)
@@ -131,6 +134,9 @@ void AMF::solve_V_With_Log()
     auto begin_LV = std::chrono::high_resolution_clock::now();
     #endif
 
+    #ifdef AMFOPENMP
+    #pragma omp parallel for 
+    #endif
     for (uword y = 0; y < G.n_cols ; ++y)
     {
         for (uword k=0 ; k< W.n_rows ; ++k)
