@@ -34,15 +34,20 @@ void AMF::solve_pg_U() // STILL WORK IN PROGRESS!!!!
 	auto begin = std::chrono::high_resolution_clock::now();
 	#endif
 
-	for (uword x =0 ; x< U_.n_rows ; ++x)
-		for (uword y = 0 ; y < U_.n_cols ; ++y)
-		{				
-			double ll = 0 ;
-
-			for (uword k = 0 ; k < A.n_cols ; ++k)
-				ll += build_S(x,k,URM_Tr_,U_old_,H_old_, V_old_) * A(y,k);
-
-			G(x,y) = - ll ; 
+	#ifdef AMFOPENMP
+	#pragma omp parallel for
+	#endif
+	for (uword k = 0 ; k < A.n_cols ; ++k)
+		for (uword x =0 ; x< U_.n_rows ; ++x)
+		{
+			double aux = build_S(x,k,URM_Tr_,U_old_,H_old_, V_old_) ;				
+			for (uword y = 0 ; y < U_.n_cols ; ++y)
+			{
+	#ifdef AMFOPENMP
+	#pragma omp atomic
+	#endif
+				G(x,y) = G(x,y) - aux * A(y,k);
+			}
 		}
 
 	#ifdef AMFTIME
@@ -88,15 +93,20 @@ void AMF::solve_pg_U_With_Log()
 	auto begin = std::chrono::high_resolution_clock::now();
 	#endif
 
-	for (uword x =0 ; x< U_.n_rows ; ++x)
-		for (uword y = 0 ; y < U_.n_cols ; ++y)
-		{				
-			double ll = 0 ;
-
-			for (uword k = 0 ; k < A.n_cols ; ++k)
-				ll += build_S(x,k,URM_Tr_,U_old_,H_old_, V_old_) * A(y,k);
-
-			G(x,y) = - ll ; 
+	#ifdef AMFOPENMP
+	#pragma omp parallel for
+	#endif
+	for (uword k = 0 ; k < A.n_cols ; ++k)
+		for (uword x =0 ; x< U_.n_rows ; ++x)
+		{
+			double aux = build_S(x,k,URM_Tr_,U_old_,H_old_, V_old_) ;				
+			for (uword y = 0 ; y < U_.n_cols ; ++y)
+			{
+	#ifdef AMFOPENMP
+	#pragma omp atomic
+	#endif
+				G(x,y) = G(x,y) - aux * A(y,k);
+			}
 		}
 
 	#ifdef AMFTIME
