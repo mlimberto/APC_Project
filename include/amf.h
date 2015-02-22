@@ -19,6 +19,10 @@
 #include <chrono>
 #endif
 
+#ifdef AMFOPENMP
+#include <omp.h>
+#endif
+
 
 // Definition of class AMF (Augmented matrix factorization)
 

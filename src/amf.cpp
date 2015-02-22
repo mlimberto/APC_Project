@@ -37,6 +37,12 @@ AMF::AMF(std::string URM_Tr_filename, std::string ICM_filename, std::string para
 		std::cout << "Time measurements are OFF" << std::endl;
 	#endif	
 
+	#ifdef AMFOPENMP
+		std::cout << "OpenMP is ON running on at most " << omp_get_max_threads() << " threads" << std::endl;
+	#else
+		std::cout << "OpenMP is OFF" << std::endl;
+	#endif	
+
 	if (!initialize_Parameters(param_filename))
 	{
 		std::cout << "WARNING : Initialization of parameters from file didn't work properly" << std::endl;
