@@ -146,11 +146,6 @@ public :
     inline double get_toll_gradient() { return toll_gradient_; }
     inline double get_gradient_step() { return gradient_step_; }
 
-    inline arma::mat& get_U() {return U_old_;} // Sarebbe meglio aggiungere delle const da qualche parte per essere sicuri che U,V,H non vengano toccate
-    inline arma::mat& get_H() {return H_old_;}
-    inline arma::sp_mat& get_V() {return V_old_;}
-
-
     inline void print_ICM(){ICM_.print("ICM =");}
     inline void print_URM_Tr(){URM_Tr_.print("URM =");}
 
