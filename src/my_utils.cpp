@@ -118,15 +118,18 @@ double evaluate_Obj_Function(const SpMat<double>& URM,const Mat<double>& U,
 							 const SpMat<double>& V_old, const double lambda)
 {
 
-	mat obj = mat("0");
+	double obj = 0;
 
-	for ( std::size_t i(0); i < URM.n_rows ; i++){
-		for ( std::size_t j(0); j < URM.n_cols; j++){
-			obj = obj +  pow( build_S( i, j, URM, U_old, H_old, V_old) - U.row(i)*H*V.col(j) , 2 );
+	#ifdef AMFOPENMP
+	#pragma omp parallel for reduction(+ : obj)
+	#endif
+	for ( std::size_t i=0; i < URM.n_rows ; i++){
+		for ( std::size_t j=0; j < URM.n_cols; j++){
+			obj = obj +  as_scalar(pow( build_S( i, j, URM, U_old, H_old, V_old) - U.row(i)*H*V.col(j) , 2 ) );
 		}
 	}
 
-	return as_scalar( obj + lambda * ( pow( norm (U,"fro"), 2) + pow( norm (H,"fro"), 2) ) );
+	return obj + lambda*dot(U,U) + lambda*dot(H,H) ;
 }
 
 

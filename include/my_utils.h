@@ -16,6 +16,14 @@
 #include <fstream>
 #include <armadillo> 
 
+#ifdef AMFOPENMP
+#include <omp.h>
+#endif
+
+#ifdef AMFTIME
+#include <chrono>
+#endif
+
 
 ///////////////////////////////////
 ////// INPUT-OUTPUT FUNCTIONS /////
