@@ -136,7 +136,7 @@ public :
 
     // RECOMMENDATIONS
 
-    arma::umat get_TopN_Recommendation(arma::uword N);
+    arma::umat get_TopN_Recommendation(arma::uword N, bool export_to_file = true);
 
 
     // SET METHODS

@@ -196,10 +196,29 @@ void AMF::initialize_matrices(){
 
 void AMF::solve() 
 {
+	for (unsigned int i=0 ; i<n_max_iter_ ; ++i)
+	{
 
-	solve_pg_U();
+		std::cout << std::endl <<"##############" << std::endl << "Iteration " << i+1 << std::endl << "##############" << std::endl << std::endl ;
 
-	// Remember to swap the variables
+		std::cout << "SOLVING FOR U ..." << std::endl;
+
+		solve_pg_U();
+
+		std::cout << "SOLVING FOR H ..." << std::endl;
+
+		solve_pg_H();
+
+		std::cout << "SOLVING FOR V ..." << std::endl;
+
+		solve_V();
+
+		std::swap(U_,U_old_);
+		std::swap(H_,H_old_);
+		std::swap(V_,V_old_);
+
+	}
+
 
 }
 
@@ -387,7 +406,7 @@ mat AMF::project_URM_Tr_by_column(uword j,const mat &S){
     return m;
 }
 
-umat AMF::get_TopN_Recommendation(uword N)
+umat AMF::get_TopN_Recommendation(uword N,bool export_to_file)
 {
 	umat REC = zeros<umat>(n_,N); // Initialize recommendation matrix
 
@@ -418,6 +437,24 @@ umat AMF::get_TopN_Recommendation(uword N)
 		// finally we fill the REC matrix with the N best sorted indexes
 
 		REC.row(i) = indexes;
+	}
+
+	if (export_to_file)
+	{
+		std::ofstream top_N_matrix;
+		top_N_matrix.open(amf_filename_prefix_+"top_N.txt") ;
+
+		for (uword i=0 ; i < n_ ; ++i)
+		{
+			for (uword j = 0 ; j < REC.n_cols ; ++j)
+			{
+				top_N_matrix << REC(i,j) << " " ;
+			}
+			top_N_matrix << "\n" ;
+
+		}
+
+		top_N_matrix.close();
 	}
 
 	return REC;
