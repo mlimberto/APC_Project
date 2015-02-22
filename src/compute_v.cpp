@@ -177,7 +177,7 @@ void AMF::solve_V_With_Log()
             stop_criterion = true;
 
         #ifndef NDEBUG
-        std::cout << "old_obj " << prec_obj << " new_obj" << curr_obj << std::endl;
+        std::cout << "old_obj " << prec_obj << " new_obj " << curr_obj << std::endl;
         #endif
 
         // Save information on logfile

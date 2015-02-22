@@ -239,13 +239,22 @@ void AMF::solve_pg_H()
 	auto begin_LH = std::chrono::high_resolution_clock::now();
 	#endif
 
+
+ 	#ifdef AMFOPENMP
+ 	#pragma omp parallel for
+ 	#endif
 	for (uword k = 0 ; k < U_.n_rows ; ++k)
  	for (uword l = 0 ; l < V_old_.n_cols ; ++l)
  	{
  		double aux = build_S(k,l,URM_Tr_,U_old_,H_old_, V_old_);
 		for (uword x =0 ; x< H_.n_rows ; ++x)
 		for (uword y = 0 ; y < H_.n_cols ; ++y)
+		{
+	#ifdef AMFOPENMP
+ 	#pragma omp atomic
+ 	#endif
  				G(x,y) = G(x,y) - U_(k,x)*aux*V_old_(y,l) ;
+ 		}
        	
     }
 
@@ -311,13 +320,22 @@ void AMF::solve_pg_H_With_Log(){
 	auto begin_LH = std::chrono::high_resolution_clock::now();
 	#endif
 
+ 	#ifdef AMFOPENMP
+ 	#pragma omp parallel for
+ 	#endif
 	for (uword k = 0 ; k < U_.n_rows ; ++k)
  	for (uword l = 0 ; l < V_old_.n_cols ; ++l)
  	{
  		double aux = build_S(k,l,URM_Tr_,U_old_,H_old_, V_old_);
+
 		for (uword x =0 ; x< H_.n_rows ; ++x)
 		for (uword y = 0 ; y < H_.n_cols ; ++y)
+		{
+	#ifdef AMFOPENMP
+	#pragma omp atomic
+	#endif
  				G(x,y) = G(x,y) - U_(k,x)*aux*V_old_(y,l) ;
+ 		}
        	
     }
 
