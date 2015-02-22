@@ -14,7 +14,7 @@ using namespace arma;
 //////////////////////////
 
 
-void AMF::solve_pg_U() // STILL WORK IN PROGRESS!!!!
+void AMF::solve_pg_U() 
 {
 	U_ = U_old_;
 

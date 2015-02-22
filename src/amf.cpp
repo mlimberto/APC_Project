@@ -12,7 +12,6 @@ using namespace arma;
 ////  CONSTRUCTORS  //////
 //////////////////////////
 
-// Most basic constructor
 AMF::AMF() :
 lambda_(0),n_max_iter_(100)
 {
@@ -402,10 +401,6 @@ umat AMF::get_TopN_Recommendation(uword N,bool export_to_file)
 
 	for (uword i=0 ; i < n_ ; i++)
 	{
-		// for every row of URM_Tr set a row vector v in which we fill the zeros
-		// of URM_Tr with the predictions. If URM_Tr is different from zero,
-		// we set v to 0, so we don't consider the evaluations already done
-		// from a user
 
 		rowvec v = zeros<rowvec>(m_);
 		for (uword j = 0 ; j < m_ ; j++)

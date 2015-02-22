@@ -208,9 +208,7 @@ void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, const double p
 
     //Check if the object function increases
     if (curr_obj < prec_obj){
-        // Update V
-        // V_=V_temp;
-        // is_feasible=true;
+
         #ifndef NDEBUG
         std::cout << gradient_step_ << " is feasible, increasing gradient step" << std::endl;
         #endif
@@ -289,7 +287,7 @@ void AMF::project_V(arma::sp_mat &V_new ,arma::mat &V_hat)
 
 sp_mat AMF::project_ICM(const mat &G){
 
-    // Funtion to set to zero the elements of the matrix B where ICM is zero
+    // Function to set to zero the elements of the matrix B where ICM is zero
 
     if (G.n_cols != ICM_.n_cols || G.n_rows != ICM_.n_rows)    {
         std::cerr << "ERROR in project_ICM : Inconsistent matrices !!!" << std::endl;

@@ -13,8 +13,6 @@ using std::vector;
 using namespace arma;
 
 
-// ricordarsi che gli indici di riga e colonna in c++ partono da 0 !!
-
 template<typename T>
 bool import_Sparse_Matrix(std::string mfilename,SpMat<T> &MM,umat &location_mat,Col<T> &values)
 {
@@ -146,7 +144,6 @@ void get_Positive_Matrix(Mat<double> &U)
 
 uvec get_Vector_Of_Indices(const umat &L){
 
-    // Functino to get de vector of indices from the location matrix
     if (L.n_rows != 2){
         std::cerr << "L has to be a location matrix (size 2xN) !!!" << std::endl;
     }
@@ -174,10 +171,6 @@ bool check_V_Constraint(const SpMat<double>& V,const sp_umat &X)
 		std::cerr << "Inconsistent matrices !!!" << std::endl;
 	}
 
-	// I must loop over all the zero elements of X (it's not enough to loop
-	// over the non-zero elements of X unfortunately)
-	// TODO This loop is inefficient, we could use the CSC format to perform
-	// this check, not very important though
 
     for (std::size_t i = 0 ; i<X.n_rows ; ++i)
 	{
