@@ -35,7 +35,7 @@ void AMF::solve_V()
 
     gradient_step_ = 1e-4;
 
-    // Compute the linear part of the gradient
+    // Compute the constant part of the gradient
     #ifndef NDEBUG
     std::cout << "Computing linear part of gradient..." << std::endl;
     #endif
@@ -122,7 +122,7 @@ void AMF::solve_V_With_Log()
 
     gradient_step_ = 1e-4;
 
-    // Compute the linear part of the gradient
+    // Compute the constant part of the gradient
     #ifndef NDEBUG
     std::cout << "Computing linear part of gradient..." << std::endl;
     #endif
@@ -190,7 +190,7 @@ void AMF::solve_V_With_Log()
 
 void AMF::solve_V_One_Iteration(arma::mat G,const arma::mat &WtW, const double prec_obj,double &curr_obj)
 {
-    // Update gradient with quadratic part
+    // Update gradient with non-constant part
     G += WtW*V_;
 
     bool is_feasible = false;
