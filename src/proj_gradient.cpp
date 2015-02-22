@@ -25,7 +25,7 @@ void AMF::solve_pg_U() // STILL WORK IN PROGRESS!!!!
 
 	gradient_step_ = 1.0;
 
-	// Compute the linear part of the gradient
+	// Compute the constant part of the gradient
 	#ifndef NDEBUG
 	std::cout << "Computing linear part of gradient ... " ;
 	#endif
@@ -79,7 +79,7 @@ void AMF::solve_pg_U_With_Log()
 
 	gradient_step_ = 1.0;
 
-	// Compute the linear part of the gradient
+	// Compute the constant part of the gradient
 	#ifndef NDEBUG
 	std::cout << "Computing linear part of gradient ... " ;
 	#endif
@@ -140,7 +140,7 @@ void AMF::solve_pg_U_With_Log()
 
 void AMF::solve_pg_U_One_Iteration(mat G,const mat &A, const arma::mat &AAt)
 {
-	// Update quadratic part of the gradient
+	// Update gradient with non-constant part
 	G += U_*AAt;
 
 	// Find a feasible step
@@ -300,7 +300,7 @@ void AMF::solve_pg_H_With_Log(){
 	// Initialize gradient step
 	gradient_step_ = 1.0;
 
-    // Precompute linear part of the gradient
+    // Precompute constant part of the gradient
     mat G(H_.n_rows,H_.n_cols,fill::zeros);
 
     #ifndef NDEBUG

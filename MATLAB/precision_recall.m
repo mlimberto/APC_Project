@@ -2,7 +2,7 @@
 
 cd ../dataset/Dataset_bin_for_Tuning/
 
-top_N = importdata('top_N.txt')
+top_N = importdata('amf_10_2.000000_top_N.txt')
 
 [U N] = size(top_N);
 
